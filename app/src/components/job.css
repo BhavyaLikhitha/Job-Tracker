@@ -3,6 +3,7 @@
   }
   
   .stats {
+ 
     margin-top: 100px !important;
     display: flex;
     justify-content: space-between;
@@ -10,13 +11,19 @@
   }
   
   .stat-box {
-    border: 1px solid #ddd;
-    border-radius: 8px;
+    background-color: white; /* Center of the box remains white */
+    border: 1px solid rgba(154, 235, 147, 0.9);
+    border-radius: 10px;
+    height: 120px;
+    font-size: 22px;
     padding: 10px 15px;
     text-align: center;
     width: 22%;
-    background-color: #f9f9f9;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    color: black;
+    font-weight: light;
+    box-shadow: 
+      inset 0 0 10px rgba(154, 235, 147, 0.7), /* Subtle green glow near edges */
+      inset 0 0 20px rgba(154, 235, 147, 0.5); /* More diffused green glow */
   }
   
   table {
@@ -39,14 +46,17 @@
   .add-job {
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 10px;
   }
   
   .add-job input,
   .add-job select,
   .add-job button {
-    padding: 8px;
-    font-size: 14px;
+    border-radius: 15px;
+    padding: 10px;
+    width: 400px;
+    font-size: 16px;
   }
   
   .add-job button {
@@ -62,6 +72,7 @@
   
   select {
     padding: 5px;
+    width: 400px !important;
     font-size: 14px;
   }
   
@@ -74,7 +85,7 @@
     text-decoration: underline;
   }
   .status-dropdown {
-    width: 100%;
+    width: 400px !important;
     padding: 8px;
     border: 1px solid #ddd;
     border-radius: 4px;
@@ -111,4 +122,21 @@
     background-color: #f783e3; /* Orange */
   }
   
+  button {
+    margin: 20px auto; /* Center the button horizontally */
+    display: block; /* Ensures the button takes up its own line */
+    background-color: #90ee90; /* Light green background */
+    color: #fff; /* White text color */
+    font-size: 16px; /* Slightly larger font size */
+    padding: 10px 20px; /* Adds padding around the text */
+    border: none; /* Removes the default border */
+    border-radius: 5px; /* Adds rounded corners */
+    cursor: pointer; /* Changes cursor to pointer on hover */
+    font-weight: bold; /* Makes the text bold */
+    transition: background-color 0.3s ease; /* Smooth hover effect */
+  }
+  
+  button:hover {
+    background-color: #76c776; /* Slightly darker green on hover */
+  }
   

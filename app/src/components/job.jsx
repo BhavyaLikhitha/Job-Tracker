@@ -49,20 +49,8 @@
 //   };
 
 //   const getStatusClass = (status) => {
-//     switch (status) {
-//       case "applied":
-//         return "status-dropdown applied";
-//       case "ghosted":
-//         return "status-dropdown ghosted";
-//       case "no response":
-//         return "status-dropdown no-response";
-//       case "rejected":
-//         return "status-dropdown rejected";
-//       case "interview going on":
-//         return "status-dropdown interview-ongoing";
-//       default:
-//         return "status-dropdown";
-//     }
+//     return `status-dropdown ${status.replace(/\s+/g, "-")}`;
+   
 //   };
 
 //   return (
@@ -129,6 +117,7 @@
 //                   <option value="interview going on">
 //                     ✅ Interview Going On
 //                   </option>
+//                   <option value="Job">🎉 Job</option> 
 //                 </select>
 //               </td>
 //               <td>
@@ -194,6 +183,7 @@
 //           <option value="no response">⏳ No Response</option>
 //           <option value="rejected">❌ Rejected</option>
 //           <option value="interview going on">✅ Interview Going On</option>
+//           <option value="Job">🎉 Job</option> 
 //         </select>
 //         <input
 //           type="url"
@@ -225,6 +215,7 @@ const JobTracker = () => {
     url: "",
     resume: null,
   });
+  const [formVisible, setFormVisible] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -248,6 +239,7 @@ const JobTracker = () => {
         url: "",
         resume: null,
       });
+      setFormVisible(false); // Hide the form after adding the job
     } else {
       alert("Please fill in all required fields.");
     }
@@ -262,7 +254,6 @@ const JobTracker = () => {
 
   const getStatusClass = (status) => {
     return `status-dropdown ${status.replace(/\s+/g, "-")}`;
-   
   };
 
   return (
@@ -295,6 +286,68 @@ const JobTracker = () => {
         </div>
       </div>
 
+      <button onClick={() => setFormVisible(!formVisible)}>
+        {formVisible ? "Cancel" : "Add Job"}
+      </button>
+
+      {formVisible && (
+        <div className="add-job">
+          <input
+            type="text"
+            name="companyName"
+            placeholder="Company Name"
+            value={newJob.companyName}
+            onChange={handleInputChange}
+          />
+          <input
+            type="date"
+            name="dateApplied"
+            value={newJob.dateApplied}
+            onChange={handleInputChange}
+          />
+          <input
+            type="text"
+            name="jobTitle"
+            placeholder="Job Title"
+            value={newJob.jobTitle}
+            onChange={handleInputChange}
+          />
+          <input
+            type="number"
+            name="months"
+            placeholder="Months"
+            value={newJob.months}
+            onChange={handleInputChange}
+          />
+          <input
+            type="number"
+            name="pay"
+            placeholder="Pay"
+            value={newJob.pay}
+            onChange={handleInputChange}
+          />
+           <input
+            type="url"
+            name="url"
+            placeholder="Job Description URL"
+            value={newJob.url}
+            onChange={handleInputChange}
+          />
+          <select name="status" value={newJob.status} onChange={handleInputChange}>
+            <option value="applied">📤 Applied</option>
+            <option value="ghosted">👻 Ghosted</option>
+            <option value="no response">⏳ No Response</option>
+            <option value="rejected">❌ Rejected</option>
+            <option value="interview going on">✅ Interview Going On</option>
+            <option value="Job">🎉 Job</option> 
+          </select>
+         
+          <input type="file" onChange={handleFileChange} />
+          <button onClick={addJob}>Add Job</button>
+          
+        </div>
+      )}
+
       <table>
         <thead>
           <tr>
@@ -326,9 +379,7 @@ const JobTracker = () => {
                   <option value="ghosted">👻 Ghosted</option>
                   <option value="no response">⏳ No Response</option>
                   <option value="rejected">❌ Rejected</option>
-                  <option value="interview going on">
-                    ✅ Interview Going On
-                  </option>
+                  <option value="interview going on">✅ Interview Going On</option>
                   <option value="Job">🎉 Job</option> 
                 </select>
               </td>
@@ -353,60 +404,6 @@ const JobTracker = () => {
           ))}
         </tbody>
       </table>
-
-      <div className="add-job">
-        <input
-          type="text"
-          name="companyName"
-          placeholder="Company Name"
-          value={newJob.companyName}
-          onChange={handleInputChange}
-        />
-        <input
-          type="date"
-          name="dateApplied"
-          value={newJob.dateApplied}
-          onChange={handleInputChange}
-        />
-        <input
-          type="text"
-          name="jobTitle"
-          placeholder="Job Title"
-          value={newJob.jobTitle}
-          onChange={handleInputChange}
-        />
-        <input
-          type="number"
-          name="months"
-          placeholder="Months"
-          value={newJob.months}
-          onChange={handleInputChange}
-        />
-        <input
-          type="number"
-          name="pay"
-          placeholder="Pay"
-          value={newJob.pay}
-          onChange={handleInputChange}
-        />
-        <select name="status" value={newJob.status} onChange={handleInputChange}>
-          <option value="applied">📤 Applied</option>
-          <option value="ghosted">👻 Ghosted</option>
-          <option value="no response">⏳ No Response</option>
-          <option value="rejected">❌ Rejected</option>
-          <option value="interview going on">✅ Interview Going On</option>
-          <option value="Job">🎉 Job</option> 
-        </select>
-        <input
-          type="url"
-          name="url"
-          placeholder="Job Description URL"
-          value={newJob.url}
-          onChange={handleInputChange}
-        />
-        <input type="file" onChange={handleFileChange} />
-        <button onClick={addJob}>Add Job</button>
-      </div>
     </div>
   );
 };
