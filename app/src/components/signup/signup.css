@@ -1,0 +1,86 @@
+.signup {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    padding: 20px;
+    background-color: white;
+  }
+  
+  .signup-image {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .signup-image img {
+    /* margin-left: -390px; */
+    height: 600px;
+    border-radius: 10px;
+  }
+  
+  .signup-form {
+    margin-right: 150px;
+    flex: 1;
+    display: flex; /* Use flexbox for alignment */
+    flex-direction: column; /* Stack children vertically */
+    justify-content: center; /* Center vertically */
+    align-items: center; /* Center horizontally */
+    max-width: 400px;
+    padding: 30px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 
+      inset 0 0 10px rgba(154, 235, 147, 0.7), /* Subtle green glow near edges */
+      inset 0 0 20px rgba(154, 235, 147, 0.5); /* More diffused green glow */
+  }
+  
+  
+  .signup-form h2 {
+    margin-bottom: 20px;
+    font-size: 40px;
+    color: #28a745; /* Green color for heading */
+    text-align: center;
+  }
+  
+  .signup-form label {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 5px;
+    color: #333;
+  }
+  
+  .signup-form input {
+    align-items: center;
+    width: 300px;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+  }
+  
+  .signup-form input:focus {
+    border-color: #28a745; /* Green border on focus */
+    outline: none;
+  }
+  
+  .register-btn {
+    width: 300px;
+    padding: 12px;
+    background-color: #28a745;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .register-btn:hover {
+    background-color: #218838;
+  }
+  
+  
