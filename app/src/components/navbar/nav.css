@@ -1,0 +1,72 @@
+/* Navbar styles */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    background-color: #fff;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+  }
+  
+  /* Brand name */
+  .navbar-brand {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .brand-name .green-dot {
+    color: #28a745; /* Green color for the dot */
+    font-size: 16px;
+    margin-top: 10px !important;
+    margin-left: 4px;
+  }
+  
+  /* Buttons container */
+  .navbar-buttons {
+    margin-right: 50px;
+    display: flex;
+    gap: 15px;
+  }
+  
+  /* Buttons */
+  .navbar-buttons .login-btn,
+  .navbar-buttons .signup-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  
+  .navbar-buttons .login-btn {
+    background-color: transparent;
+    color: #28a745;
+    border: 1px solid #28a745;
+  }
+  
+  .navbar-buttons .login-btn:hover {
+    background-color: #28a745;
+    color: #fff;
+  }
+  
+  .navbar-buttons .signup-btn {
+    background-color: #28a745;
+    color: #fff;
+    border: 1px solid #28a745;
+  }
+  
+  .navbar-buttons .signup-btn:hover {
+    background-color:#28a745;
+    border-color:#28a745;
+  }
+  
+ 
+  
