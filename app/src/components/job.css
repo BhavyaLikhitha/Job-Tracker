@@ -2,13 +2,30 @@
     margin: 20px;
   }
   
+  .stats {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .stat-box {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px 15px;
+    text-align: center;
+    width: 22%;
+    background-color: #f9f9f9;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
   table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
   }
   
-  th, td {
+  th,
+  td {
     border: 1px solid #ddd;
     padding: 8px;
     text-align: left;
@@ -41,6 +58,7 @@
   .add-job button:hover {
     background-color: #45a049;
   }
+  
   select {
     padding: 5px;
     font-size: 14px;
@@ -54,4 +72,3 @@
   a:hover {
     text-decoration: underline;
   }
-    
