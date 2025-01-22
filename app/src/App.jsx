@@ -1,12 +1,12 @@
 import './App.css'
-import Job from './components/job'
+import JobTracker from './components/job'
 
 function App() {
 
 
   return (
     <>
-     <Job/>
+     <JobTracker/>
     </>
   )
 }
