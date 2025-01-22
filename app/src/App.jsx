@@ -5,6 +5,7 @@ import Hero from "./components/hero/hero";
 import JobTracker from "./components/job";
 import Navbar from "./components/navbar/nav";
 import Signup from "./components/signup/signup";
+import Login from "./components/login/login";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
 
         {/* Signup route displays the Signup page */}
         <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
     </Router>
   );

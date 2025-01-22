@@ -43,7 +43,7 @@
     padding: 10px 16px;
     width: 100px;
     border-radius: 20px;
-    font-size: 14px;
+    font-size: 18px;
     font-weight: bold;
     cursor: pointer;
 }
@@ -68,6 +68,6 @@
 }
 
 .navbar-buttons .signup-btn:hover {
-    background-color: #28a745;
+    background-color: #3ebe5c;
     border-color: #28a745;
 }
