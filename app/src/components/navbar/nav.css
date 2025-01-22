@@ -20,9 +20,13 @@
     font-weight: bold;
     color: #333;
 }
+.brand-link {
+    text-decoration: none !important;
+    color: black ; /* Remove underline for the link */
+  }
 
 .brand-name .green-dot {
-    color: #28a745; /* Green color for the dot */
+    color: #28a745 !important; /* Green color for the dot */
     font-size: 16px;
     margin-top: 10px !important;
     margin-left: 4px;
