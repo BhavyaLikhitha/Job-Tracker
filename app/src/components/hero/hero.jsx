@@ -8,10 +8,13 @@ const Hero = () => {
       <div className="hero-content">
         <h1 >Track Your Jobs Effortlessly and for Free!</h1>
         <p className="matter">
-          Organize and streamline your job applications with ease. Monitor your
-          progress, follow up on opportunities, and land your dream job with
-          ApplyTrack.
-        </p>
+  Organize and streamline your job applications with ease. Monitor your
+  progress, follow up on opportunities, and land your dream job with <br></br>
+  <span className="blac">
+     ApplyTrack<span className="green-dot">●</span>
+  </span>
+</p>
+
         <button className="cta-button">Get Started Now</button>
       </div>
       <div className="hero-image">

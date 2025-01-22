@@ -49,4 +49,23 @@
     border-radius: 10px;
   }
   
+  .matter {
+    font-size: 24px;
+    line-height: 1.2;
+    color: #666;
+    margin-bottom: 20px;
+  }
+  
+  .blac {
+    font-weight: bold; /* Makes "ApplyTrack" bold */
+    color: black; /* Sets text color to black */
+  }
+  
+  .green-dot {
+    font-size: 16px;
+    margin-top: 10px !important;
+    margin-left: 4px;
+    
+    color: #28a745; /* Green color for the dot */
+  }
   
