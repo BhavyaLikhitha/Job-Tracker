@@ -148,4 +148,10 @@
     background-color: #68ce68; /* Slightly darker green on hover */
     box-shadow: 5px 5px 5px rgba(154, 235, 147, 0.5);
   }
-  
+  .no-jobs-message{
+    font-size: 36px;
+    font-family: 'Times New Roman', Times, serif;
+    text-align: center;
+   
+ 
+  }
