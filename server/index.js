@@ -46,14 +46,14 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 const corsOptions = {
-  origin: "https://job-tracker-coop-search.vercel.app", // Allow only the frontend origin
+  origin: "https://job-tracker-coop-search.vercel.app", // Your frontend origin
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true, // Allow credentials
 };
 
-app.use(cors(corsOptions)); // Apply the CORS middleware
 app.use(cors(corsOptions));
+
 app.use(express.json());
 // Middleware
 
@@ -89,12 +89,14 @@ mongoose
 app.use("/api/users", userRoutes);
 app.use("/api/jobs", jobRoutes);
 // Add a specific handler for OPTIONS requests
+
+// Handle OPTIONS requests explicitly
 app.options("*", (req, res) => {
   res.header("Access-Control-Allow-Origin", "https://job-tracker-coop-search.vercel.app");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.header("Access-Control-Allow-Credentials", "true");
-  res.sendStatus(200);
+  res.sendStatus(200); // Explicitly return HTTP 200 OK
 });
 
 
