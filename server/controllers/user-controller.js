@@ -37,7 +37,7 @@
 // };
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import User from "../models/User.js"; // Use uppercase for models to follow convention
+import User from "../models/Users.js";
 
 export const signup = async (req, res) => {
   const { username, email, password } = req.body;
