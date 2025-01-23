@@ -173,7 +173,7 @@
     }
   
     .navbar-brand {
-      font-size: 24px; /* Reduce brand name size */
+      font-size: 20px; /* Reduce brand name size */
       margin-bottom: 10px; /* Add spacing between brand and buttons */
     }
   
@@ -182,13 +182,14 @@
     }
   
     .navbar-buttons {
-      margin-right: 20px; /* Remove right margin */
+      margin-left: -50px !important;
+      margin-right: 30px !important; /* Remove right margin */
       gap: 10px; /* Reduce gap between buttons */
       flex-direction: row !important; /* Stack buttons vertically */
     }
   
     .navbar-buttons a {
-      width: 90px; /* Reduce button width */
+      width: 70px !important; /* Reduce button width */
       padding: 8px 12px; /* Adjust padding for smaller buttons */
       font-size: 14px; /* Reduce font size */
     }
