@@ -198,8 +198,14 @@
   
     .welcome-msg {
       margin-right: 50px !important ;
-      font-size: 14px !important; /* Reduce welcome message font size */
+      font-size: 16px !important; /* Reduce welcome message font size */
       
+    }
+    .logout-btn{
+      margin-left: -50px !important;
+      margin-right: 20px !important; /* Remove right margin */
+      gap: 5px; /* Reduce gap between buttons */
+      flex-direction: row !important; /* Stack buttons vertically */
     }
   }
   

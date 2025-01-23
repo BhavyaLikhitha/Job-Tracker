@@ -8,6 +8,7 @@ const JobTracker = () => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true); // State for loading indicator
   const navigate = useNavigate();
+  const isMobileView = () => window.innerWidth <= 768; // Define mobile width threshold
 
   const [newJob, setNewJob] = useState({
     companyName: "",
@@ -172,6 +173,175 @@ const JobTracker = () => {
     return `status-dropdown ${status.replace(/\s+/g, "-")}`;
   };
 
+//   return (
+//     <div className="job-tracker">
+//       <div className="stats">
+//         <div className="stat-box">
+//           <h3>Total Jobs Applied</h3>
+//           <p>{jobs.length}</p>
+//         </div>
+//         <div className="stat-box">
+//           <h3>Total Rejected</h3>
+//           <p>{jobs.filter((job) => job.status === "rejected").length}</p>
+//         </div>
+//         <div className="stat-box">
+//           <h3>Awaiting Response</h3>
+//           <p>
+//             {jobs.filter(
+//               (job) =>
+//                 job.status === "applied" ||
+//                 job.status === "no response" ||
+//                 job.status === "ghosted"
+//             ).length}
+//           </p>
+//         </div>
+//         <div className="stat-box">
+//           <h3>Interviews Ongoing</h3>
+//           <p>{jobs.filter((job) => job.status === "interview going on").length}</p>
+//         </div>
+//       </div>
+// {/* 
+//       <button onClick={() => setFormVisible(!formVisible)}>
+//         {formVisible ? "Cancel" : "Add Job"}
+//       </button> */}
+//       <button
+//   onClick={() => {
+//     const token = localStorage.getItem("token"); // Check if the user is logged in
+//     if (token) {
+//       setFormVisible(!formVisible); // Toggle the form visibility
+//     } else {
+//       // navigate("/signup"); // Redirect to signup page if not logged in
+//       toast.info("Please sign up or log in to add a job.");
+//       setTimeout(() => {
+//         navigate("/signup"); // Navigate after a slight delay
+//       }, 2000); // Add a short delay to ensure the toast is displayed
+//       return;
+//     }
+//   }}
+// >
+//   {formVisible ? "Cancel" : "Add Job"}
+// </button>
+
+//       {formVisible && (
+//         <div className="add-job">
+//           <input
+//             type="text"
+//             name="companyName"
+//             placeholder="Company Name"
+//             value={newJob.companyName}
+//             onChange={handleInputChange}
+//           />
+//           <input
+//             type="date"
+//             name="dateApplied"
+//             value={newJob.dateApplied}
+//             onChange={handleInputChange}
+//           />
+//           <input
+//             type="text"
+//             name="jobTitle"
+//             placeholder="Job Title"
+//             value={newJob.jobTitle}
+//             onChange={handleInputChange}
+//           />
+//           <input
+//             type="number"
+//             name="months"
+//             placeholder="Months"
+//             value={newJob.months}
+//             onChange={handleInputChange}
+//           />
+//           <input
+//             type="number"
+//             name="pay"
+//             placeholder="Pay"
+//             value={newJob.pay}
+//             onChange={handleInputChange}
+//           />
+//           <input
+//             type="url"
+//             name="url"
+//             placeholder="Job Description URL"
+//             value={newJob.url}
+//             onChange={handleInputChange}
+//           />
+//           <select name="status" value={newJob.status} onChange={handleInputChange}>
+//             <option value="applied">📤 Applied</option>
+//             <option value="ghosted">👻 Ghosted</option>
+//             <option value="no response">⏳ No Response</option>
+//             <option value="rejected">❌ Rejected</option>
+//             <option value="interview going on">✅ Interview Going On</option>
+//             <option value="Job">🎉 Job</option>
+//           </select>
+//           <input type="file" onChange={handleFileChange} />
+//           <button onClick={addJob}>Add Job</button>
+//         </div>
+//       )}
+
+//       {jobs.length === 0 ? (
+//         <div className="no-jobs-message">
+//           <p>😢 Uh oh! You haven't added any jobs to track yet. 😲</p>
+//         </div>
+//       ) : (
+//         <table>
+//           <thead>
+//             <tr>
+//               <th>Company Name</th>
+//               <th>Date Applied</th>
+//               <th>Job Title</th>
+//               <th>Months</th>
+//               <th>Pay</th>
+//               <th>Status</th>
+//               <th>URL</th>
+//               <th>Resume</th>
+//             </tr>
+//           </thead>
+//           <tbody>
+//             {jobs.map((job) => (
+//               <tr key={job._id}>
+//                 <td>{job.companyName}</td>
+//                 <td>{new Date(job.dateApplied).toLocaleDateString()}</td> 
+//                 {/* <td>{job.dateApplied}</td> */}
+//                 <td>{job.jobTitle}</td>
+//                 <td>{job.months}</td>
+//                 <td>{job.pay}</td>
+//                 <td>
+//                   <select
+//                     className={getStatusClass(job.status)}
+//                     value={job.status}
+//                     onChange={(e) => updateJobStatus(job._id, e.target.value)}
+//                   >
+//                     <option value="applied">📤 Applied</option>
+//                     <option value="ghosted">👻 Ghosted</option>
+//                     <option value="no response">⏳ No Response</option>
+//                     <option value="rejected">❌ Rejected</option>
+//                     <option value="interview going on">✅ Interview Going On</option>
+//                     <option value="Job">🎉 Job</option>
+//                   </select>
+//                 </td>
+//                 <td>
+//                   <a href={job.url} target="_blank" rel="noopener noreferrer">
+//                     Link
+//                   </a>
+//                 </td>
+//                 <td>
+//                   {job.resume ? (
+//                     // <a href={`http://localhost:3002/api/jobs/download/${job.resume}`} download>
+//                        <a href={`https://job-tracker-api-rho.vercel.app/api/jobs/download/${job.resume}`} download>
+//                       Download
+//                     </a>
+//                   ) : (
+//                     "No File Uploaded"
+//                   )}
+//                 </td>
+//               </tr>
+//             ))}
+//           </tbody>
+//         </table>
+//       )}
+//       <ToastContainer autoClose={3000} />
+//     </div>
+  // );
   return (
     <div className="job-tracker">
       <div className="stats">
@@ -199,28 +369,21 @@ const JobTracker = () => {
           <p>{jobs.filter((job) => job.status === "interview going on").length}</p>
         </div>
       </div>
-{/* 
-      <button onClick={() => setFormVisible(!formVisible)}>
-        {formVisible ? "Cancel" : "Add Job"}
-      </button> */}
+  
       <button
-  onClick={() => {
-    const token = localStorage.getItem("token"); // Check if the user is logged in
-    if (token) {
-      setFormVisible(!formVisible); // Toggle the form visibility
-    } else {
-      // navigate("/signup"); // Redirect to signup page if not logged in
-      toast.info("Please sign up or log in to add a job.");
-      setTimeout(() => {
-        navigate("/signup"); // Navigate after a slight delay
-      }, 2000); // Add a short delay to ensure the toast is displayed
-      return;
-    }
-  }}
->
-  {formVisible ? "Cancel" : "Add Job"}
-</button>
-
+        onClick={() => {
+          if (token) {
+            setFormVisible(!formVisible);
+          } else {
+            toast.info("Please sign up or log in to add a job.");
+            setTimeout(() => navigate("/signup"), 2000);
+            return;
+          }
+        }}
+      >
+        {formVisible ? "Cancel" : "Add Job"}
+      </button>
+  
       {formVisible && (
         <div className="add-job">
           <input
@@ -276,8 +439,12 @@ const JobTracker = () => {
           <button onClick={addJob}>Add Job</button>
         </div>
       )}
-
-      {jobs.length === 0 ? (
+  
+      {isMobileView() && token ? (
+        <div className="no-jobs-message">
+          <p>View your jobs list in desktop for better experience 😊</p>
+        </div>
+      ) : jobs.length === 0 ? (
         <div className="no-jobs-message">
           <p>😢 Uh oh! You haven't added any jobs to track yet. 😲</p>
         </div>
@@ -299,8 +466,7 @@ const JobTracker = () => {
             {jobs.map((job) => (
               <tr key={job._id}>
                 <td>{job.companyName}</td>
-                <td>{new Date(job.dateApplied).toLocaleDateString()}</td> 
-                {/* <td>{job.dateApplied}</td> */}
+                <td>{new Date(job.dateApplied).toLocaleDateString()}</td>
                 <td>{job.jobTitle}</td>
                 <td>{job.months}</td>
                 <td>{job.pay}</td>
@@ -325,8 +491,10 @@ const JobTracker = () => {
                 </td>
                 <td>
                   {job.resume ? (
-                    // <a href={`http://localhost:3002/api/jobs/download/${job.resume}`} download>
-                       <a href={`https://job-tracker-api-rho.vercel.app/api/jobs/download/${job.resume}`} download>
+                    <a
+                      href={`https://job-tracker-api-rho.vercel.app/api/jobs/download/${job.resume}`}
+                      download
+                    >
                       Download
                     </a>
                   ) : (
@@ -341,6 +509,7 @@ const JobTracker = () => {
       <ToastContainer autoClose={3000} />
     </div>
   );
+  
 };
 
 export default JobTracker;
