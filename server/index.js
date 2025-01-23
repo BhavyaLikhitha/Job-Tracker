@@ -68,7 +68,7 @@ app.use(express.json());
 app.use("/uploads", express.static("uploads")); // Serve uploaded files
 
 mongoose
-  .connect("mongodb+srv://bukkab:1IEUNZS0QK5PYopv@jobtracker.4tvak.mongodb.net/Jobs?retryWrites=true&w=majority&appName=JobTracker")
+  .connect(process.env.MONGO_CONNECTION)
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.error("Error connecting to MongoDB:", err));
 
