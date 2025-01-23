@@ -12,11 +12,11 @@ const port = process.env.PORT;
 
 // Middleware
 app.use(cors(
-//   {
-//     origin: ["https://job-tracker-api-rho.vercel.app/"],
-//     methods: ["POST", "GET","PUT"],
-//     credentials: true
-// }
+  {
+    origin: ["https://job-tracker-coop-search.vercel.app/"],
+    methods: ["POST", "GET","PUT"],
+    credentials: true
+}
 ));
 app.use(express.json());
 app.use("/uploads", express.static("uploads")); // Serve uploaded files
