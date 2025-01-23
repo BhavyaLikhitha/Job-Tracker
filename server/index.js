@@ -13,7 +13,7 @@ const port = process.env.PORT;
 // Middleware
 app.use(cors(
   {
-    origin: ["https://job-tracker-coop-search.vercel.app/"],
+    origin: ["https://job-tracker-coop-search.vercel.app"],
     methods: ["POST", "GET","PUT"],
     credentials: true
 }
