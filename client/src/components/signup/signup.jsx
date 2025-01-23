@@ -83,6 +83,7 @@ import "./signup.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import sign from "../../assets/sign.png";
+import { Link } from "react-router-dom";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -182,9 +183,9 @@ const Signup = () => {
           </button>
           <p className="login-link-text">
   Already have an account?{" "}
-  <a href="/login" className="login-link">
+  <Link href="/login" className="login-link">
     Login
-  </a>
+  </Link>
 </p>
         </form>
       </div>
