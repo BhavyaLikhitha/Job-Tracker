@@ -1,4 +1,4 @@
-# 🌟 ApplyTrack ● - Your Ultimate Job Tracker 🌟
+# 🌟 ApplyTrack - Your Ultimate Job Tracker 🌟
 
 ## 🚀 Track Your Jobs Effortlessly & For Free! 💼✨
 
