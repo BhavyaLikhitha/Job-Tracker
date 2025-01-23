@@ -1,5 +1,4 @@
-/* Navbar styles */
-.navbar {
+/* .navbar {
     position: fixed;
     top: 0;
     left: 0;
@@ -14,7 +13,6 @@
     z-index: 1000;
 }
 
-/* Brand name */
 .navbar-brand {
     font-size: 32px;
     font-weight: bold;
@@ -22,24 +20,22 @@
 }
 .brand-link {
     text-decoration: none !important;
-    color: black ; /* Remove underline for the link */
+    color: black ; 
   }
 
 .brand-name .green-dot {
-    color: #28a745 !important; /* Green color for the dot */
+    color: #28a745 !important; 
     font-size: 16px;
     margin-top: 10px !important;
     margin-left: 4px;
 }
 
-/* Buttons container */
 .navbar-buttons {
     margin-right: 50px;
     display: flex;
     gap: 15px;
 }
 
-/* Link styles (reset to look like buttons) */
 .navbar-buttons a {
     text-decoration: none;
     display: inline-block;
@@ -52,7 +48,6 @@
     cursor: pointer;
 }
 
-/* Login button styles */
 .navbar-buttons .login-btn {
     background-color: transparent;
     color: #28a745;
@@ -64,7 +59,7 @@
     color: #fff;
 }
 
-/* Signup button styles */
+
 .navbar-buttons .signup-btn {
     background-color: #28a745;
     color: #fff;
@@ -81,4 +76,127 @@
    margin-top: 32px;
    margin-right: 20px;
     font-size: 22px !important;
-}
+} */
+
+/* Navbar styles */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    background-color: #fff;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+  }
+  
+  /* Brand name */
+  .navbar-brand {
+    font-size: 32px;
+    font-weight: bold;
+    color: #333;
+  }
+  .brand-link {
+    text-decoration: none !important;
+    color: black; /* Remove underline for the link */
+  }
+  
+  .brand-name .green-dot {
+    color: #28a745 !important; /* Green color for the dot */
+    font-size: 16px;
+    margin-top: 10px !important;
+    margin-left: 4px;
+  }
+  
+  /* Buttons container */
+  .navbar-buttons {
+    margin-right: 50px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+  }
+  
+  /* Link styles (reset to look like buttons) */
+  .navbar-buttons a {
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    padding: 10px 16px;
+    width: 100px;
+    border-radius: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  /* Login button styles */
+  .navbar-buttons .login-btn {
+    background-color: transparent;
+    color: #28a745;
+    border: 1px solid #28a745;
+  }
+  
+  .navbar-buttons .login-btn:hover {
+    background-color: #28a745;
+    color: #fff;
+  }
+  
+  /* Signup button styles */
+  .navbar-buttons .signup-btn {
+    background-color: #28a745;
+    color: #fff;
+    border: 1px solid #28a745;
+  }
+  
+  .navbar-buttons .signup-btn:hover {
+    background-color: #3ebe5c;
+    border-color: #28a745;
+  }
+  
+  .welcome-msg {
+    color: black !important;
+    font-size: 22px !important;
+    margin-right: 20px;
+  }
+  
+  /* Responsive styles for mobile view */
+  @media (max-width: 768px) {
+    .navbar {
+      height: auto; /* Adjust height for content wrapping */
+      flex-direction: row !important; /* Stack items vertically */
+      padding: 10px; /* Adjust padding */
+      text-align: center; /* Center-align content */
+    }
+  
+    .navbar-brand {
+      font-size: 24px; /* Reduce brand name size */
+      margin-bottom: 10px; /* Add spacing between brand and buttons */
+    }
+  
+    .brand-name .green-dot {
+      font-size: 12px; /* Adjust green dot size */
+    }
+  
+    .navbar-buttons {
+      margin-right: 20px; /* Remove right margin */
+      gap: 10px; /* Reduce gap between buttons */
+      flex-direction: row !important; /* Stack buttons vertically */
+    }
+  
+    .navbar-buttons a {
+      width: 90px; /* Reduce button width */
+      padding: 8px 12px; /* Adjust padding for smaller buttons */
+      font-size: 14px; /* Reduce font size */
+    }
+  
+    .welcome-msg {
+      font-size: 18px; /* Reduce welcome message font size */
+      margin-top: 5px; /* Adjust spacing */
+      margin-bottom: 10px; /* Add spacing below welcome message */
+    }
+  }
+  
