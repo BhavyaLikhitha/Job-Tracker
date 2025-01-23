@@ -162,24 +162,34 @@
     font-size: 22px !important;
     margin-right: 20px;
   }
-  
+
+
+
   @media (max-width: 768px) {
     .navbar {
-      height: 60px !important; /* Adjust height for content wrapping */
-      flex-direction: row !important; /* Stack items vertically */
-      padding: 10px; /* Adjust padding */
-      text-align: center; /* Center-align content */
+      display: flex;
+      height: 60px; /* Set consistent height */
+      flex-direction: row; /* Align all items in a single row */
+      align-items: center; /* Vertically center items */
+      justify-content: space-between; /* Distribute space evenly */
+      padding: 0 10px; /* Adjust padding */
     }
   
     .navbar-brand {
-      font-size: 20px; /* Reduce brand name size */
-      /* margin-bottom: 10px; Add spacing between brand and buttons */
+      flex: 1; /* Allow the brand to take available space */
+      font-size: 20px; /* Adjust brand font size */
+      white-space: nowrap; /* Prevent wrapping */
+      text-align: left; /* Align brand to the left */
     }
   
-    .brand-name .green-dot {
-
-      /* margin-left: 10px !important; */
-      font-size: 10px; /* Adjust green dot size */
+    .welcome-msg {
+      flex: 2; /* Allow welcome message to take additional space */
+      text-align: center; /* Center the welcome message */
+      font-size: 14px; /* Adjust font size */
+      white-space: nowrap; /* Prevent wrapping */
+      overflow: hidden; /* Prevent overflow */
+      text-overflow: ellipsis; /* Add ellipsis for long text */
+      margin: 0; /* Remove unnecessary margins */
     }
   
     .navbar-buttons {
@@ -188,28 +198,21 @@
       gap: 5px; /* Reduce gap between buttons */
       flex-direction: row !important; /* Stack buttons vertically */
     }
-  
     .navbar-buttons a {
       width: 70px !important; /* Reduce button width */
       padding: 8px 12px; /* Adjust padding for smaller buttons */
       font-size: 14px; /* Reduce font size */
     }
-  
-    .welcome-msg {
-      margin-right: 50px !important ;
-      white-space: nowrap; /* Prevent the welcome message from wrapping */
-      font-size: 16px; /* Reduce font size */
-      margin-right: 10px; /* Adjust margins for better spacing */
-      overflow: hidden; /* Hide any overflow text */
-      text-overflow: ellipsis; /* Add ellipsis if text overflows */
-      
+    .logout-btn {
+      padding: 8px 10px; /* Adjust button padding */
+      font-size: 14px; /* Adjust font size */
+      border-radius: 5px; /* Add consistent styling */
+      white-space: nowrap; /* Prevent wrapping */
     }
-    .logout-btn{
-      margin-left: -50px !important;
-      margin-right: 20px !important; /* Remove right margin */
-      gap: 5px; /* Reduce gap between buttons */
-      flex-direction: row !important; /* Stack buttons vertically */
-      flex-shrink: 1;
-      
+  
+    .brand-name .green-dot {
+      font-size: 10px; /* Adjust green dot size */
+      vertical-align: middle; /* Align vertically with text */
     }
   }
+  
