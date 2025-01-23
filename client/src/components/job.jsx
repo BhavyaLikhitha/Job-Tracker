@@ -4,13 +4,13 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 // import { AuthContext } from "../../AuthContext.jsx";
-import { AuthContext } from "../AuthContext.jsx";
+import { AuthContext } from "../AuthContext";
 const JobTracker = () => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true); // State for loading indicator
   const navigate = useNavigate();
   const isMobileView = () => window.innerWidth <= 768; // Define mobile width threshold
- const { isLoggedIn, username, logout } = useContext(AuthContext);
+ const { isLoggedIn, username } = useContext(AuthContext); 
   const [newJob, setNewJob] = useState({
     companyName: "",
     dateApplied: "",
@@ -777,7 +777,7 @@ const JobTracker = () => {
         </div>
       )}
   
-      {isMobileView() && token ? (
+      {isMobileView() && token && isLoggedIn ? (
         <div className="no-jobs-message">
           <p className="welcome-msg">Welcome, {username} ❤️!</p>
           <p>View your jobs list in desktop for better experience 😊</p>
