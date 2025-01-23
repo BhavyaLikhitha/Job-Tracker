@@ -69,3 +69,55 @@
     color: #28a745; /* Green color for the dot */
   }
   
+  @media (max-width: 768px) {
+    .hero {
+      flex-direction: column; /* Stack items vertically */
+      align-items: center; /* Center-align content */
+      height: auto; /* Adjust height to fit content */
+      padding: 20px; /* Adjust padding for smaller screens */
+    }
+  
+    .hero-content {
+       margin-top: -50px !important;
+      max-width: 100%; /* Adjust content width for better readability */
+      text-align: center; /* Center-align text for a clean look */
+      margin-bottom: 20px; /* Add spacing below the text */
+    }
+  
+    .hero-content h1 {
+      font-size: 36px; /* Reduce font size for the heading */
+      margin-bottom: 15px; /* Adjust spacing */
+    }
+  
+    .hero-content p {
+      font-size: 16px; /* Adjust font size for paragraph */
+      line-height: 1.5; /* Increase line height for readability */
+      margin-bottom: 15px; /* Add spacing */
+    }
+  
+    .cta-button {
+      align-items: center !important;
+      margin-left: 110px !important;
+      font-size: 14px; /* Reduce button font size */
+      padding: 10px 20px; /* Adjust button padding */
+      border-radius: 15px; /* Adjust border radius */
+    }
+  
+    .hero-image {
+      display: flex;
+      justify-content: center; /* Center the image horizontally */
+      align-items: center; /* Center the image vertically */
+      width: 100%; /* Ensure the container spans the full width */
+      /* margin-top: 20px; Add some spacing above */
+    }
+    
+    .hero-image img {
+      height: auto; /* Allow the image to scale dynamically */
+      width: 90%; /* Ensure the image fits within the container */
+      max-width: 400px; /* Set a reasonable max width */
+      margin-top: -80px !important; /* Remove negative margin */
+      border-radius: 10px; /* Keep the border-radius consistent */
+    }
+    
+  }
+  

@@ -12,7 +12,7 @@
   
   .stat-box {
     gap:15px;
-    background-color: white; /* Center of the box remains white */
+    background-color: white; 
     border: 1px solid rgba(154, 235, 147, 0.9);
     border-radius: 10px;
     height: 120px;
@@ -23,8 +23,8 @@
     color: black;
     font-weight: light;
     box-shadow: 
-      inset 0 0 10px rgba(154, 235, 147, 0.7), /* Subtle green glow near edges */
-      inset 0 0 20px rgba(154, 235, 147, 0.5); /* More diffused green glow */
+      inset 0 0 10px rgba(154, 235, 147, 0.7), 
+      inset 0 0 20px rgba(154, 235, 147, 0.5); 
   }
   
   table {
@@ -100,23 +100,23 @@
   }
   
   .status-dropdown.applied {
-    background-color: #007bff; /* Blue */
+    background-color: #007bff; 
   }
   
   .status-dropdown.ghosted {
-    background-color: #ffc107; /* Yellow */
+    background-color: #ffc107; 
   }
   
   .status-dropdown.no-response{
-    background-color: #17a2b8; /* Cyan */
+    background-color: #17a2b8; 
   }
   
   .status-dropdown.rejected {
-    background-color: #dc3545; /* Red */
+    background-color: #dc3545;
   }
   
   .status-dropdown.interview-going-on {
-    background-color: #28a745; /* Green */
+    background-color: #28a745;
   }
   
   .status-dropdown option {
@@ -125,27 +125,27 @@
   }
 
   .status-dropdown.Job {
-    background-color: #f783e3; /* Orange */
+    background-color: #f783e3; 
   }
   
   button {
    
     margin: 30px auto; 
-    display: block; /* Ensures the button takes up its own line */
-    background-color: #28a745; /* Light green background */
-    color: #fff; /* White text color */
-    font-size: 16px; /* Slightly larger font size */
-    padding: 10px 20px; /* Adds padding around the text */
-    border: none; /* Removes the default border */
-    border-radius: 20px; /* Adds rounded corners */
-    cursor: pointer; /* Changes cursor to pointer on hover */
-    font-weight: bold; /* Makes the text bold */
-    transition: background-color 0.3s ease; /* Smooth hover effect */
+    display: block; 
+    background-color: #28a745; 
+    color: #fff; 
+    font-size: 16px; 
+    padding: 10px 20px; 
+    border: none; 
+    border-radius: 20px;
+    cursor: pointer; 
+    font-weight: bold;
+    transition: background-color 0.3s ease; 
     
   }
   
   button:hover {
-    background-color: #68ce68; /* Slightly darker green on hover */
+    background-color: #68ce68; 
     box-shadow: 5px 5px 5px rgba(154, 235, 147, 0.5);
   }
   .no-jobs-message{
@@ -155,3 +155,54 @@
    
  
   }
+
+  @media (max-width: 768px) {
+    /* Stack elements vertically for mobile view */
+    .job-tracker {
+      margin: 10px;
+    }
+  
+    /* Stats section as a 2x2 grid */
+    .stats {
+      margin-top: -40px !important;
+      display: grid;
+      grid-template-columns: 1fr 1fr; /* Two columns */
+      gap: 8px; /* Space between boxes */
+      margin-bottom: 20px;
+    }
+  
+    .stat-box {
+      width: 80%; /* Full width inside the grid */
+      font-size: 18px; /* Adjust font size */
+      height: auto; /* Let height adjust dynamically */
+      padding: 15px;
+    }
+  
+    /* Table styles for better readability on mobile */
+    table {
+      font-size: 14px; /* Reduce font size for table */
+      margin-bottom: 10px;
+    }
+  
+    th,
+    td {
+      padding: 8px; /* Reduce padding for table cells */
+      font-size: 12px; /* Adjust font size */
+    }
+  
+    /* Add Job form adjustments */
+    .add-job input,
+    .add-job select,
+    .add-job button {
+      width: 90%; /* Full width with some margin */
+      font-size: 14px; /* Smaller font size */
+    }
+  
+    /* Message styling */
+    .no-jobs-message {
+      font-size: 24px; /* Adjust font size for smaller screens */
+      text-align: center;
+      margin-top: 20px;
+    }
+  }
+  
