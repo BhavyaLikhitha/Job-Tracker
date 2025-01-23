@@ -1,4 +1,4 @@
-/* Container styles */
+/* 
 .login {
     display: flex;
     align-items: center;
@@ -8,7 +8,7 @@
     background-color: #f9f9f9;
   }
   
-  /* Left side image */
+  
   .login-image {
     flex: 1;
     display: flex;
@@ -22,27 +22,27 @@
     border-radius: 10px;
   }
   
-  /* Right side form */
+
   .login-form {
     margin-right: 150px;
     flex: 1;
-    display: flex; /* Use flexbox for alignment */
-    flex-direction: column; /* Stack children vertically */
-    justify-content: center; /* Center vertically */
-    align-items: center; /* Center horizontally */
+    display: flex;
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center;
     max-width: 400px;
     padding: 30px;
     background-color: white;
     border-radius: 10px;
     box-shadow: 
-      inset 0 0 10px rgba(154, 235, 147, 0.7), /* Subtle green glow near edges */
-      inset 0 0 20px rgba(154, 235, 147, 0.5); /* More diffused green glow */
+      inset 0 0 10px rgba(154, 235, 147, 0.7),
+      inset 0 0 20px rgba(154, 235, 147, 0.5); 
   }
   
   .login-form h2 {
     margin-bottom: 20px;
     font-size: 40px;
-    color: #28a745; /* Green color for heading */
+    color: #28a745; 
     text-align: center;
   }
   
@@ -63,7 +63,7 @@
   }
   
   .login-form input:focus {
-    border-color: #28a745; /* Green border on focus */
+    border-color: #28a745; 
     outline: none;
   }
   
@@ -82,5 +82,131 @@
   
   .login-btn:hover {
     background-color: #218838;
+  } */
+/* General styles for the login page */
+.login {
+  display: flex;
+  flex-direction: row; /* Default horizontal layout */
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  padding: 20px;
+  background-color: #f9f9f9;
+}
+
+.login-image {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-image img {
+  height: 600px;
+  border-radius: 10px;
+  max-width: 100%; /* Ensure image fits within its container */
+}
+
+.login-form {
+  margin-right: 150px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  max-width: 400px;
+  padding: 30px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 
+    inset 0 0 10px rgba(154, 235, 147, 0.7),
+    inset 0 0 20px rgba(154, 235, 147, 0.5);
+}
+
+.login-form h2 {
+  margin-bottom: 20px;
+  font-size: 40px;
+  color: #28a745;
+  text-align: center;
+}
+
+.login-form label {
+  display: block;
+  font-size: 16px;
+  margin-bottom: 5px;
+  color: #333;
+  margin-left: -50px;
+}
+
+.login-form input {
+   margin-left: -50px;
+  width: 150%;
+  max-width: 300px;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.login-form input:focus {
+  border-color: #28a745;
+  outline: none;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #28a745;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login-btn:hover {
+  background-color: #218838;
+}
+
+/* Responsive styles for mobile view */
+@media (max-width: 768px) {
+  .login {
+    flex-direction: column; /* Stack the image and form vertically */
+    height: auto;
   }
-  
+
+  .login-image {
+    margin-bottom: 20px; /* Add space between image and form */
+  }
+
+  .login-image img {
+    margin-top: 70px !important;
+    height: auto; /* Let the image resize dynamically */
+    max-width: 90%; /* Prevent the image from being too large */
+  }
+
+  .login-form {
+    margin-right: 0; /* Reset right margin */
+    width: 100%; /* Take full width */
+    padding: 20px; /* Adjust padding */
+    max-width: 90%; /* Prevent form from being too wide */
+    box-shadow: 
+      inset 0 0 10px rgba(154, 235, 147, 0.7),
+      inset 0 0 20px rgba(154, 235, 147, 0.5);
+  }
+
+  .login-form input {
+    max-width: 150% !important; /* Ensure inputs are full width */
+  }
+
+  .login-form h2 {
+    font-size: 30px; /* Adjust heading size for smaller screens */
+  }
+
+  .login-btn {
+    padding: 10px; /* Adjust button padding */
+  }
+}
