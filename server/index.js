@@ -15,7 +15,7 @@ app.use(cors(
   {
     origin: ["https://job-tracker-coop-search.vercel.app"],
     methods: ["POST", "GET","PUT"],
-    credentials: true
+    // credentials: true
 }
 ));
 app.use(express.json());
