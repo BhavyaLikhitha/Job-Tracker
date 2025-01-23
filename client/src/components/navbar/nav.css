@@ -165,7 +165,7 @@
   
   @media (max-width: 768px) {
     .navbar {
-      height: auto; /* Ensure height adjusts dynamically */
+      /* height: auto; Ensure height adjusts dynamically */
       flex-direction: row; /* Keep items in a row */
       padding: 10px; /* Adjust padding */
       justify-content: space-between; /* Distribute space between items */
