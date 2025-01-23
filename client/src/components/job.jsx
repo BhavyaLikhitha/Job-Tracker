@@ -271,7 +271,7 @@ const JobTracker = () => {
   
       {isMobileView() && token ? (
         <div className="no-jobs-message">
-          <p>Hi! Please View your jobs list in desktop for better experience 😊</p>
+          <p>Hi! View your jobs list in desktop for better experience 😊</p>
         </div>
       ) : jobs.length === 0 ? (
         <div className="no-jobs-message">

@@ -167,6 +167,7 @@
   @media (max-width: 768px) {
     .navbar {
       height: 40px !important; /* Adjust height for content wrapping */
+      
       flex-direction: row !important; /* Stack items vertically */
       padding: 10px; /* Adjust padding */
       text-align: center; /* Center-align content */
