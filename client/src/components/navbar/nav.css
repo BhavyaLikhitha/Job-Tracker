@@ -174,17 +174,19 @@
   
     .navbar-brand {
       font-size: 20px; /* Reduce brand name size */
-      margin-bottom: 10px; /* Add spacing between brand and buttons */
+      /* margin-bottom: 10px; Add spacing between brand and buttons */
     }
   
     .brand-name .green-dot {
+
+      margin-left: -10px !important;
       font-size: 12px; /* Adjust green dot size */
     }
   
     .navbar-buttons {
       margin-left: -50px !important;
-      margin-right: 30px !important; /* Remove right margin */
-      gap: 10px; /* Reduce gap between buttons */
+      margin-right: 20px !important; /* Remove right margin */
+      gap: 5px; /* Reduce gap between buttons */
       flex-direction: row !important; /* Stack buttons vertically */
     }
   
