@@ -25,35 +25,6 @@ export const addJob = async (req, res) => {
   }
 };
 
-// export const getJobs = async (req, res) => {
-//   const { userId } = req.user;
-
-//   try {
-//     const jobs = await Job.find({ userId });
-//     res.status(200).json(jobs);
-//   } catch (error) {
-//     console.log(error)
-//     res.status(500).json({ error: "Error fetching jobs" });
-//   }
-// };
-
-// export const getJobs = async (req, res) => {
-//   console.log("Decoded User ID:", req.user?.userId); // Log to debug
-//   const { userId } = req.user;
-
-//   if (!userId) {
-//     return res.status(400).json({ error: "User ID not found in request" });
-//   }
-
-//   try {
-//     const jobs = await Job.find({ userId });
-//     res.status(200).json(jobs);
-//   } catch (error) {
-//     console.error("Error fetching jobs:", error);
-//     res.status(500).json({ error: "Error fetching jobs" });
-//   }
-// };
-
 import mongoose from "mongoose";
 
 export const getJobs = async (req, res) => {
@@ -86,4 +57,30 @@ export const downloadResume = (req, res) => {
       res.status(500).json({ error: "Error downloading file" });
     }
   });
+};
+
+export const updateJobStatus = async (req, res) => {
+  const { jobId, status } = req.body; // Extract jobId and status from the request body
+
+  if (!jobId || !status) {
+    return res.status(400).json({ error: "Job ID and status are required" });
+  }
+
+  try {
+    // Find the job by ID and update its status
+    const updatedJob = await Job.findByIdAndUpdate(
+      jobId,
+      { status },
+      { new: true } // Return the updated document
+    );
+
+    if (!updatedJob) {
+      return res.status(404).json({ error: "Job not found" });
+    }
+
+    res.status(200).json({ message: "Job status updated successfully", updatedJob });
+  } catch (error) {
+    console.error("Error updating job status:", error);
+    res.status(500).json({ error: "Error updating job status" });
+  }
 };

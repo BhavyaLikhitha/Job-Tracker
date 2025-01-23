@@ -123,32 +123,63 @@ const JobTracker = () => {
     }
   };
 
+  // const updateJobStatus = async (id, newStatus) => {
+  //   try {
+  //     const response = await fetch(`http://localhost:3002/api/jobs/update-job-status`, {
+  //       method: "PUT",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //       body: JSON.stringify({ userId, jobId: id, status: newStatus }),
+  //     });
+
+  //     if (response.ok) {
+  //       const updatedJobs = jobs.map((job) =>
+  //         job._id === id ? { ...job, status: newStatus } : job
+  //       );
+  //       setJobs(updatedJobs);
+  //       toast.success("Job status updated");
+  //     } else {
+  //       toast.error("Failed to update job status");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error updating job status:", error);
+  //     toast.error("An error occurred while updating the job status");
+  //   }
+  // };
+
   const updateJobStatus = async (id, newStatus) => {
     try {
-      const response = await fetch(`http://localhost:3002/api/jobs/update-job-status`, {
-        method: "PUT",
+      // Make a PUT request to the backend to update the job status
+      const response = await fetch("http://localhost:3002/api/jobs/update-job-status", {
+        method: "PUT", // Correct method
         headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json", // Correct Content-Type for JSON data
+          Authorization: `Bearer ${token}`, // Token is correctly added to Authorization header
         },
-        body: JSON.stringify({ userId, jobId: id, status: newStatus }),
+        body: JSON.stringify({ jobId: id, status: newStatus }), // Sending jobId and status in the body
       });
-
+  
       if (response.ok) {
+        // Update the local state if the response is successful
         const updatedJobs = jobs.map((job) =>
           job._id === id ? { ...job, status: newStatus } : job
         );
-        setJobs(updatedJobs);
-        toast.success("Job status updated");
+        setJobs(updatedJobs); // Update the `jobs` state with the modified job
+        toast.success("Job status updated"); // Show a success toast
       } else {
-        toast.error("Failed to update job status");
+        const errorData = await response.json(); // Parse error response
+        toast.error(errorData.error || "Failed to update job status"); // Display error toast
       }
     } catch (error) {
+      // Catch and handle any errors that occur during the fetch
       console.error("Error updating job status:", error);
       toast.error("An error occurred while updating the job status");
     }
   };
-
+  
+  
   const getStatusClass = (status) => {
     return `status-dropdown ${status.replace(/\s+/g, "-")}`;
   };
