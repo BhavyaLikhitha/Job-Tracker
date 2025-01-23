@@ -31,7 +31,8 @@ const JobTracker = () => {
     const fetchJobs = async () => {
       try {
         console.log("Token:", token); // Debugging token
-        const response = await fetch("http://localhost:3002/api/jobs/get-job", {
+        // const response = await fetch("http://localhost:3002/api/jobs/get-job", {
+          const response = await fetch("https://job-tracker-api-rho.vercel.app/api/jobs/get-job", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -98,7 +99,8 @@ const JobTracker = () => {
         }
         formData.append("userId", userId);
 
-        const response = await fetch("http://localhost:3002/api/jobs/add-job", {
+        // const response = await fetch("http://localhost:3002/api/jobs/add-job", {
+          const response = await fetch("https://job-tracker-api-rho.vercel.app/api/jobs/add-job", {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -137,7 +139,8 @@ const JobTracker = () => {
   const updateJobStatus = async (id, newStatus) => {
     try {
       // Make a PUT request to the backend to update the job status
-      const response = await fetch("http://localhost:3002/api/jobs/update-job-status", {
+      // const response = await fetch("http://localhost:3002/api/jobs/update-job-status", {
+        const response = await fetch("https://job-tracker-api-rho.vercel.app/api/jobs/update-job-status", {
         method: "PUT", // Correct method
         headers: {
           "Content-Type": "application/json", // Correct Content-Type for JSON data
@@ -322,7 +325,8 @@ const JobTracker = () => {
                 </td>
                 <td>
                   {job.resume ? (
-                    <a href={`http://localhost:3002/api/jobs/download/${job.resume}`} download>
+                    // <a href={`http://localhost:3002/api/jobs/download/${job.resume}`} download>
+                       <a href={`https://job-tracker-api-rho.vercel.app/api/jobs/download/${job.resume}`} download>
                       Download
                     </a>
                   ) : (

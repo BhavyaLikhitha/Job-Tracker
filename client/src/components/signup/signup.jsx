@@ -103,7 +103,8 @@ const Signup = () => {
       toast.error("Passwords do not match");
     } else {
       try {
-        const response = await fetch("http://localhost:3002/api/users/signup", {
+        // const response = await fetch("http://localhost:3002/api/users/signup", {
+          const response = await fetch("https://job-tracker-api-rho.vercel.app/api/users/signup", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
