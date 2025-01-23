@@ -47,29 +47,41 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 
+const corsOptions = {
+  origin: "https://job-tracker-coop-search.vercel.app",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+};
+
+// Handle OPTIONS requests explicitly
+app.options("*", cors(corsOptions));
+
+app.use(cors(corsOptions));
+app.use(express.json());
 // Middleware
 
-app.use(
-  cors({
-    origin: "https://job-tracker-coop-search.vercel.app", // Specific origin, not wildcard
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    credentials: true, // Important for include credentials mode
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+// app.use(
+//   cors({
+//     origin: "https://job-tracker-coop-search.vercel.app", // Specific origin, not wildcard
+//     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+//     credentials: true, // Important for include credentials mode
+//     allowedHeaders: ["Content-Type", "Authorization"],
+//   })
+// );
 
-// Remove the wildcard OPTIONS handler
-// Replace with a specific preflight handler
-app.options("/api/users/login", cors()); // Specific route preflight
+// // Remove the wildcard OPTIONS handler
+// // Replace with a specific preflight handler
+// app.options("/api/users/login", cors()); // Specific route preflight
 
-// Debugging logs
-app.use((req, res, next) => {
-  console.log("Request received with origin:", req.headers.origin);
-  next();
-});
+// // Debugging logs
+// app.use((req, res, next) => {
+//   console.log("Request received with origin:", req.headers.origin);
+//   next();
+// });
 
-app.options("*", cors()); // Enable CORS preflight for all routes
-app.use(express.json());
+// app.options("*", cors()); // Enable CORS preflight for all routes
+// app.use(express.json());
 app.use("/uploads", express.static("uploads")); // Serve uploaded files
 
 mongoose
@@ -80,15 +92,22 @@ mongoose
 // Routes
 app.use("/api/users", userRoutes);
 app.use("/api/jobs", jobRoutes);
-
-// Fallback for preflight requests
-app.options("*", (req, res) => {
-  res.header("Access-Control-Allow-Origin", "https://job-tracker-coop-search.vercel.app");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.header("Access-Control-Allow-Credentials", "true");
-  return res.sendStatus(200);
+// Add a specific handler for OPTIONS requests
+app.options("/api/users/login", (req, res) => {
+  res.header('Access-Control-Allow-Origin', 'https://job-tracker-coop-search.vercel.app');
+  res.header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.sendStatus(200);
 });
+// // Fallback for preflight requests
+// app.options("*", (req, res) => {
+//   res.header("Access-Control-Allow-Origin", "https://job-tracker-coop-search.vercel.app");
+//   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+//   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+//   res.header("Access-Control-Allow-Credentials", "true");
+//   return res.sendStatus(200);
+// });
 
 
 
