@@ -48,7 +48,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 const corsOptions = {
-  origin: "https://job-tracker-coop-search.vercel.app",
+  origin: ["https://job-tracker-coop-search.vercel.app"],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
