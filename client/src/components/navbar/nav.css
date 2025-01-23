@@ -179,8 +179,8 @@
   
     .brand-name .green-dot {
 
-      margin-left: -10px !important;
-      font-size: 12px; /* Adjust green dot size */
+      /* margin-left: 10px !important; */
+      font-size: 10px; /* Adjust green dot size */
     }
   
     .navbar-buttons {
