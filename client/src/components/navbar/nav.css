@@ -165,37 +165,51 @@
   
   @media (max-width: 768px) {
     .navbar {
-      height: 60px !important; 
-      flex-direction: row; /* Keep items in a row */
+      height: 60px !important; /* Adjust height for content wrapping */
+      flex-direction: row !important; /* Stack items vertically */
       padding: 10px; /* Adjust padding */
-      justify-content: space-between; /* Distribute space between items */
-      align-items: center; /* Align items vertically */
-      overflow: hidden; /* Prevent overflow issues */
+      text-align: center; /* Center-align content */
+    }
+  
+    .navbar-brand {
+      font-size: 20px; /* Reduce brand name size */
+      /* margin-bottom: 10px; Add spacing between brand and buttons */
+    }
+  
+    .brand-name .green-dot {
+
+      /* margin-left: 10px !important; */
+      font-size: 10px; /* Adjust green dot size */
     }
   
     .navbar-buttons {
-      display: flex;
+      margin-left: -50px !important;
+      margin-right: 20px !important; /* Remove right margin */
       gap: 5px; /* Reduce gap between buttons */
-      flex-wrap: nowrap; /* Prevent buttons from wrapping to the next line */
+      flex-direction: row !important; /* Stack buttons vertically */
     }
   
-    .navbar-buttons a,
-    .logout-btn {
-      width: auto; /* Let buttons adjust width dynamically */
-      padding: 6px 10px; /* Reduce button padding */
-      font-size: 14px; /* Adjust font size */
+    .navbar-buttons a {
+      width: 70px !important; /* Reduce button width */
+      padding: 8px 12px; /* Adjust padding for smaller buttons */
+      font-size: 14px; /* Reduce font size */
     }
   
     .welcome-msg {
+      margin-right: 50px !important ;
       white-space: nowrap; /* Prevent the welcome message from wrapping */
-      font-size: 14px; /* Reduce font size */
+      font-size: 16px; /* Reduce font size */
       margin-right: 10px; /* Adjust margins for better spacing */
       overflow: hidden; /* Hide any overflow text */
       text-overflow: ellipsis; /* Add ellipsis if text overflows */
+      
     }
-  
-    .logout-btn {
-      flex-shrink: 1; /* Allow the button to shrink if needed */
+    .logout-btn{
+      margin-left: -50px !important;
+      margin-right: 20px !important; /* Remove right margin */
+      gap: 5px; /* Reduce gap between buttons */
+      flex-direction: row !important; /* Stack buttons vertically */
+      flex-shrink: 1;
+      
     }
   }
-  
