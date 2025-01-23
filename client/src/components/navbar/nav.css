@@ -197,9 +197,9 @@
     }
   
     .welcome-msg {
-      font-size: 18px; /* Reduce welcome message font size */
-      margin-top: 5px; /* Adjust spacing */
-      margin-bottom: 10px; /* Add spacing below welcome message */
+      margin-right: 50px !important ;
+      font-size: 14px !important; /* Reduce welcome message font size */
+      
     }
   }
   
