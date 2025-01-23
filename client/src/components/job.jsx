@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import "./job.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 
 const JobTracker = () => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true); // State for loading indicator
+  const navigate = useNavigate();
 
   const [newJob, setNewJob] = useState({
     companyName: "",
@@ -72,6 +74,15 @@ const JobTracker = () => {
   };
 
   const addJob = async () => {
+    const token = localStorage.getItem("token");
+
+  if (!token) {
+    // Redirect to signup page if the user is not logged in
+    navigate("/signup");
+    toast.error("Please sign up or log in to add a job.");
+    return;
+  }
+
     if (newJob.companyName && newJob.dateApplied && newJob.jobTitle) {
       try {
         const formData = new FormData();
@@ -185,10 +196,27 @@ const JobTracker = () => {
           <p>{jobs.filter((job) => job.status === "interview going on").length}</p>
         </div>
       </div>
-
+{/* 
       <button onClick={() => setFormVisible(!formVisible)}>
         {formVisible ? "Cancel" : "Add Job"}
-      </button>
+      </button> */}
+      <button
+  onClick={() => {
+    const token = localStorage.getItem("token"); // Check if the user is logged in
+    if (token) {
+      setFormVisible(!formVisible); // Toggle the form visibility
+    } else {
+      // navigate("/signup"); // Redirect to signup page if not logged in
+      toast.info("Please sign up or log in to add a job.");
+      setTimeout(() => {
+        navigate("/signup"); // Navigate after a slight delay
+      }, 2000); // Add a short delay to ensure the toast is displayed
+      return;
+    }
+  }}
+>
+  {formVisible ? "Cancel" : "Add Job"}
+</button>
 
       {formVisible && (
         <div className="add-job">
@@ -306,7 +334,7 @@ const JobTracker = () => {
           </tbody>
         </table>
       )}
-      <ToastContainer />
+      <ToastContainer autoClose={3000} />
     </div>
   );
 };
