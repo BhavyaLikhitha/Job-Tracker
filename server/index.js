@@ -48,15 +48,19 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // Middleware
+
 app.use(
   cors({
-    origin: "https://job-tracker-coop-search.vercel.app", // Use your frontend URL (no trailing slash)
+    origin: "https://job-tracker-coop-search.vercel.app", // Specific origin, not wildcard
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization"], // Allow specific headers
+    credentials: true, // Important for include credentials mode
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
+// Remove the wildcard OPTIONS handler
+// Replace with a specific preflight handler
+app.options("/api/users/login", cors()); // Specific route preflight
 
 // Debugging logs
 app.use((req, res, next) => {
