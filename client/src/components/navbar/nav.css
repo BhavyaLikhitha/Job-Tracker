@@ -166,7 +166,7 @@
   /* Responsive styles for mobile view */
   @media (max-width: 768px) {
     .navbar {
-      height: 60px !important; /* Adjust height for content wrapping */
+      height: 40px !important; /* Adjust height for content wrapping */
       flex-direction: row !important; /* Stack items vertically */
       padding: 10px; /* Adjust padding */
       text-align: center; /* Center-align content */
