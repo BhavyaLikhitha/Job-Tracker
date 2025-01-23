@@ -50,7 +50,7 @@ const port = process.env.PORT || 3000;
 // Middleware
 app.use(
   cors({
-    origin: "https://job-tracker-coop-search.vercel.app", // Allow only your frontend origin
+    origin: ["https://job-tracker-coop-search.vercel.app"], // Allow only your frontend origin
     methods: ["GET", "POST", "PUT"],
     credentials: true, // Allow cookies if needed
     allowedHeaders: ["Content-Type", "Authorization"], // Allow specific headers
