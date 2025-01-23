@@ -197,9 +197,9 @@
     }
   
     .welcome-msg {
-      /* margin-right: 50px !important ;
-      font-size: 14px !important;  */
-      display: none !important;
+      /* margin-right: 50px !important ; */
+      font-size: 14px !important; 
+      /* display: none !important; */
       
     }
     .logout-btn{
