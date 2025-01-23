@@ -175,10 +175,16 @@ const Signup = () => {
             onChange={handleChange}
             required
           />
-
+         
           <button type="submit" className="register-btn">
             Register
           </button>
+          <p className="login-link-text">
+  Already have an account?{" "}
+  <a href="/login" className="login-link">
+    Login
+  </a>
+</p>
         </form>
       </div>
       <ToastContainer />
