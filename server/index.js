@@ -50,7 +50,7 @@ const port = process.env.PORT || 3000;
 // Middleware
 app.use(
   cors({
-    origin: "https://job-tracker-coop-search.vercel.app", // Allow only your frontend origin
+    origin: "https://job-tracker-coop-search.vercel.app/", // Allow only your frontend origin
     methods: ["GET", "POST", "PUT"],
     credentials: true, // Allow cookies if needed
     allowedHeaders: ["Content-Type", "Authorization"], // Allow specific headers
@@ -79,7 +79,7 @@ app.use("/api/jobs", jobRoutes);
 // Fallback for preflight requests
 app.use((req, res, next) => {
   if (req.method === "OPTIONS") {
-    res.header("Access-Control-Allow-Origin", "https://job-tracker-coop-search.vercel.app");
+    res.header("Access-Control-Allow-Origin", "https://job-tracker-coop-search.vercel.app/");
     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
     res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
     return res.sendStatus(200);
