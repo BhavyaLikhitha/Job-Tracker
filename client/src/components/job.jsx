@@ -123,32 +123,6 @@ const JobTracker = () => {
     }
   };
 
-  // const updateJobStatus = async (id, newStatus) => {
-  //   try {
-  //     const response = await fetch(`http://localhost:3002/api/jobs/update-job-status`, {
-  //       method: "PUT",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //       body: JSON.stringify({ userId, jobId: id, status: newStatus }),
-  //     });
-
-  //     if (response.ok) {
-  //       const updatedJobs = jobs.map((job) =>
-  //         job._id === id ? { ...job, status: newStatus } : job
-  //       );
-  //       setJobs(updatedJobs);
-  //       toast.success("Job status updated");
-  //     } else {
-  //       toast.error("Failed to update job status");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error updating job status:", error);
-  //     toast.error("An error occurred while updating the job status");
-  //   }
-  // };
-
   const updateJobStatus = async (id, newStatus) => {
     try {
       // Make a PUT request to the backend to update the job status
@@ -294,7 +268,8 @@ const JobTracker = () => {
             {jobs.map((job) => (
               <tr key={job._id}>
                 <td>{job.companyName}</td>
-                <td>{job.dateApplied}</td>
+                <td>{new Date(job.dateApplied).toLocaleDateString()}</td> 
+                {/* <td>{job.dateApplied}</td> */}
                 <td>{job.jobTitle}</td>
                 <td>{job.months}</td>
                 <td>{job.pay}</td>
