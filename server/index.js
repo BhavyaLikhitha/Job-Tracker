@@ -50,7 +50,7 @@ const port = process.env.PORT || 3000;
 // Middleware
 app.use(
   cors({
-    origin: "https://job-tracker-coop-search.vercel.app/", // Allow only your frontend origin
+    origin: "https://job-tracker-coop-search.vercel.app", // Allow only your frontend origin
     methods: ["GET", "POST", "PUT"],
     credentials: true, // Allow cookies if needed
     allowedHeaders: ["Content-Type", "Authorization"], // Allow specific headers
@@ -68,7 +68,7 @@ app.use(express.json());
 app.use("/uploads", express.static("uploads")); // Serve uploaded files
 
 mongoose
-  .connect(process.env.MONGO_CONNECTION)
+  .connect("mongodb+srv://bukkab:1IEUNZS0QK5PYopv@jobtracker.4tvak.mongodb.net/Jobs?retryWrites=true&w=majority&appName=JobTracker")
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.error("Error connecting to MongoDB:", err));
 
