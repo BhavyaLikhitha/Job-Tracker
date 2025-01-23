@@ -25,24 +25,64 @@ export const addJob = async (req, res) => {
   }
 };
 
+// export const getJobs = async (req, res) => {
+//   const { userId } = req.user;
+
+//   try {
+//     const jobs = await Job.find({ userId });
+//     res.status(200).json(jobs);
+//   } catch (error) {
+//     console.log(error)
+//     res.status(500).json({ error: "Error fetching jobs" });
+//   }
+// };
+
+// export const getJobs = async (req, res) => {
+//   console.log("Decoded User ID:", req.user?.userId); // Log to debug
+//   const { userId } = req.user;
+
+//   if (!userId) {
+//     return res.status(400).json({ error: "User ID not found in request" });
+//   }
+
+//   try {
+//     const jobs = await Job.find({ userId });
+//     res.status(200).json(jobs);
+//   } catch (error) {
+//     console.error("Error fetching jobs:", error);
+//     res.status(500).json({ error: "Error fetching jobs" });
+//   }
+// };
+
+import mongoose from "mongoose";
+
 export const getJobs = async (req, res) => {
-  const { userId } = req.user;
+  const { userId } = req.user; // Extracted from token
+  console.log("Decoded User ID:", userId); // Debugging
+
+  if (!userId) {
+    return res.status(400).json({ error: "User ID not found in request" });
+  }
 
   try {
-    const jobs = await Job.find({ userId });
+    // Ensure proper creation of ObjectId
+    const objectId = mongoose.Types.ObjectId.createFromHexString(userId);
+    const jobs = await Job.find({ userId: objectId });
+    console.log("Jobs found for user:", jobs); // Debugging
     res.status(200).json(jobs);
   } catch (error) {
-    console.log(error)
+    console.error("Error fetching jobs:", error);
     res.status(500).json({ error: "Error fetching jobs" });
   }
 };
+
 
 export const downloadResume = (req, res) => {
   const { fileName } = req.params;
   const filePath = `uploads/${fileName}`;
   res.download(filePath, (err) => {
     if (err) {
-        console.log(error)
+        console.log(err)
       res.status(500).json({ error: "Error downloading file" });
     }
   });
