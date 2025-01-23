@@ -13,11 +13,13 @@ const port = process.env.PORT;
 // Middleware
 app.use(cors(
   {
-    origin: ["https://job-tracker-coop-search.vercel.app"],
-    methods: ["POST", "GET","PUT"],
-    // credentials: true
+    origin: "https://job-tracker-coop-search.vercel.app", // Allow only your frontend origin
+    methods: ["GET", "POST", "PUT"], // Add all allowed HTTP methods
+    credentials: true, // Allow cookies if needed
+    allowedHeaders: ["Content-Type", "Authorization"], // Allow specific headers
 }
 ));
+app.options("*", cors()); // Enable CORS preflight for all routes
 app.use(express.json());
 app.use("/uploads", express.static("uploads")); // Serve uploaded files
 
