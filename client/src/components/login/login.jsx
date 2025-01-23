@@ -44,7 +44,11 @@ const Login = () => {
           localStorage.setItem("token", data.token); // Store token for authenticated requests
           localStorage.setItem("username", data.username); // Store username
           login(data.username); // Update context state
-          navigate("/"); // Redirect to the home page after successful login
+          setTimeout(() => {
+            navigate("/"); // Navigate after a slight delay
+          }, 2000); // Add a short delay to ensure the toast is displayed
+          return;
+          // Redirect to the home page after successful login
         } else {
           const errorData = await response.json();
           toast.error(errorData.error || "Login failed");
