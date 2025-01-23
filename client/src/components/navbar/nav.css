@@ -75,3 +75,10 @@
     background-color: #3ebe5c;
     border-color: #28a745;
 }
+
+.welcome-msg{
+    color:black !important;
+   margin-top: 32px;
+   margin-right: 20px;
+    font-size: 22px !important;
+}
