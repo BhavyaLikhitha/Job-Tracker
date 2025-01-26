@@ -128,7 +128,8 @@ const JobTracker = () => {
           toast.error("Failed to add job");
         }
       } catch (error) {
-        console.error("Error adding job:", error);
+        
+        console.log("Error adding job:", error);
         toast.error("An error occurred while adding the job");
       }
     } else {
@@ -158,6 +159,7 @@ const JobTracker = () => {
         toast.success("Job status updated"); // Show a success toast
       } else {
         const errorData = await response.json(); // Parse error response
+        console.log(errorData);
         toast.error(errorData.error || "Failed to update job status"); // Display error toast
       }
     } catch (error) {
@@ -257,13 +259,6 @@ const JobTracker = () => {
             value={newJob.url}
             onChange={handleInputChange}
           />
-          {/* newly added line */}
-          <input
-  type="file"
-  name="resume"
-  onChange={(e) => setNewJob({ ...newJob, resume: e.target.files[0] })}
-/>
-
           <select name="status" value={newJob.status} onChange={handleInputChange}>
             <option value="applied">📤 Applied</option>
             <option value="ghosted">👻 Ghosted</option>
