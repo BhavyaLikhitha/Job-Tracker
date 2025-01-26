@@ -9,19 +9,14 @@ conn.once("open", () => {
   gfs = Grid(conn.db, mongoose.mongo);
   gfs.collection("uploads"); // Ensure it matches the bucketName in multer-gridfs-storage
 });
-
-
 export const addJob = async (req, res) => {
-  console.log("Request body:", req.body); // Logs job details
-  console.log("Uploaded file:", req.file); // Logs uploaded file details
+  console.log("Uploaded file details:", req.file); // Log uploaded file details for debugging
 
-  // Check if the file was uploaded
-  if (!req.file) {
-    console.error("No file uploaded!");
-    return res.status(400).json({ error: "Resume file is required" });
+  // Check if the file was uploaded successfully
+  if (!req.file || !req.file.id) {
+    console.error("File upload failed, no file or _id found");
+    return res.status(400).json({ error: "Resume file upload failed" });
   }
-
-  console.log("File ID stored in GridFS:", req.file.id);
 
   const { userId } = req.user;
   const { companyName, dateApplied, jobTitle, months, pay, status, url } = req.body;
@@ -40,14 +35,52 @@ export const addJob = async (req, res) => {
     });
 
     const savedJob = await newJob.save();
-
-    console.log("Job added successfully:", savedJob);
+    console.log("Job saved successfully:", savedJob); // Debug successful save
     res.status(201).json(savedJob);
   } catch (error) {
-    console.error("Error adding new job:", error);
-    res.status(500).json({ error: "An error occurred while adding the job" });
+    console.error("Error saving job:", error);
+    res.status(500).json({ error: "Failed to add job" });
   }
 };
+
+
+// export const addJob = async (req, res) => {
+//   console.log("Request body:", req.body); // Logs job details
+//   console.log("Uploaded file:", req.file); // Logs uploaded file details
+
+//   // Check if the file was uploaded
+//   if (!req.file) {
+//     console.error("No file uploaded!");
+//     return res.status(400).json({ error: "Resume file is required" });
+//   }
+
+//   console.log("File ID stored in GridFS:", req.file.id);
+
+//   const { userId } = req.user;
+//   const { companyName, dateApplied, jobTitle, months, pay, status, url } = req.body;
+
+//   try {
+//     const newJob = new Job({
+//       userId,
+//       companyName,
+//       dateApplied,
+//       jobTitle,
+//       months,
+//       pay,
+//       status,
+//       url,
+//       resume: req.file.id, // Save GridFS file ID in the database
+//     });
+
+//     const savedJob = await newJob.save();
+
+//     console.log("Job added successfully:", savedJob);
+//     res.status(201).json(savedJob);
+//   } catch (error) {
+//     console.error("Error adding new job:", error);
+//     res.status(500).json({ error: "An error occurred while adding the job" });
+//   }
+// };
 
 // export const addJob = async (req, res) => {
 //   console.log("Request body:", req.body); // Logs job details

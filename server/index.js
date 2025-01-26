@@ -61,10 +61,20 @@ app.use(express.json());
 // Initialize GridFS
 let gfs;
 const conn = mongoose.connection;
+console.log(conn);
 conn.once("open", () => {
   gfs = Grid(conn.db, mongoose.mongo);
   gfs.collection("uploads"); // Match bucketName in multer-gridfs-storage
   console.log("GridFS initialized");
+});
+
+process.on("uncaughtException", (err) => {
+  console.error("Uncaught Exception:", err);
+  process.exit(1);
+});
+
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("Unhandled Rejection at:", promise, "reason:", reason);
 });
 
 

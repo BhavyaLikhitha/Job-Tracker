@@ -53,8 +53,36 @@
 // export default upload;
 
 
-import multer from "multer";
+// import multer from "multer";
+// import { GridFsStorage } from "multer-gridfs-storage";
+
+// // MongoDB URI
+// const mongoURI = process.env.MONGO_CONNECTION;
+
+// // GridFS Storage
+// const storage = new GridFsStorage({
+//   url: mongoURI,
+//   options: { useUnifiedTopology: true },
+//   file: (req, file) => {
+//     const match = ["application/pdf"]; // Accept only PDF files
+
+//     if (match.indexOf(file.mimetype) === -1) {
+//       return `${Date.now()}-file-${file.originalname}`;
+//     }
+
+//     return {
+//       bucketName: "uploads", // Bucket to store files (default is `fs`)
+//       filename: `${Date.now()}-${file.originalname}`, // Custom filename
+//     };
+//   },
+// });
+
+// const upload = multer({ storage });
+
+// export default upload;
+
 import { GridFsStorage } from "multer-gridfs-storage";
+import multer from "multer";
 
 // MongoDB URI
 const mongoURI = process.env.MONGO_CONNECTION;
@@ -62,17 +90,17 @@ const mongoURI = process.env.MONGO_CONNECTION;
 // GridFS Storage
 const storage = new GridFsStorage({
   url: mongoURI,
-  options: { useUnifiedTopology: true },
+  options: { useUnifiedTopology: true }, // Add this to avoid warnings
   file: (req, file) => {
     const match = ["application/pdf"]; // Accept only PDF files
 
     if (match.indexOf(file.mimetype) === -1) {
-      return `${Date.now()}-file-${file.originalname}`;
+      return null; // Reject unsupported files
     }
 
     return {
-      bucketName: "uploads", // Bucket to store files (default is `fs`)
-      filename: `${Date.now()}-${file.originalname}`, // Custom filename
+      bucketName: "uploads", // Ensure this matches your GridFS bucket
+      filename: `${Date.now()}-${file.originalname}`, // Generate unique filename
     };
   },
 });
