@@ -1,9 +1,11 @@
 import Job from "../models/Job.js";
-
 export const addJob = async (req, res) => {
   console.log("Request body:", req.body); // Logs job details
     console.log("Uploaded file:", req.file); // Logs uploaded file details
+    // Check if the uploads directory exists
+  console.log("Directory exists:", fs.existsSync("../uploads"));
     if (!req.file) {
+      console.log("File path to save:", `uploads/${req.file.filename}`);
       return res.status(400).json({ error: "Resume file is required" });
     }
 
