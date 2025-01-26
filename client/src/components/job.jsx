@@ -167,6 +167,7 @@ const JobTracker = () => {
             Authorization: `Bearer ${token}`, // Authorization header
           },
           body: formData, // Pass FormData directly
+          credentials: "include",
         });
   
         const data = await response.json();
