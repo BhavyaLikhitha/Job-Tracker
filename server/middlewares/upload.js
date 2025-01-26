@@ -21,15 +21,21 @@
 
 import multer from "multer";
 import path from "path";
+import "../uploads"
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    // Specify the directory where files will be stored
-    cb(null, "uploads/"); 
+    const uploadPath = path.join(__dirname, "../uploads/");
+    // console.log("Saving file to uploads/ directory");
+    // // Specify the directory where files will be stored
+    // cb(null, "uploads/"); 
+    console.log("Absolute path for uploads:", uploadPath);
+    cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
     // Generate a unique filename using timestamp and original name
     cb(null, `${Date.now()}-${file.originalname}`);
+    console.log("Uploaded file:", req.file);
   },
 });
 

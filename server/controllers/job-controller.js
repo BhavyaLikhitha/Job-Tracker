@@ -4,6 +4,7 @@ export const addJob = async (req, res) => {
     console.log("Uploaded file:", req.file); // Logs uploaded file details
     // Check if the uploads directory exists
   console.log("Directory exists:", fs.existsSync("../uploads"));
+  console.log("File path being saved to database:", req.file?.filename);
     if (!req.file) {
       console.log("File path to save:", `uploads/${req.file.filename}`);
       return res.status(400).json({ error: "Resume file is required" });
