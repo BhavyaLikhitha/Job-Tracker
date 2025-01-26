@@ -41,8 +41,6 @@ import mongoose from "mongoose";
 import cors from "cors";
 import userRoutes from "./routes/user-routes.js";
 import jobRoutes from "./routes/jobs-routes.js";
-import path from "path";
-import fs from "fs";
 
 dotenv.config();
 const app = express();
@@ -57,16 +55,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 app.use(express.json());
-
-// Resolve the absolute path for the uploads directory
-// const uploadDir = path.resolve("uploads");
-// Use an absolute path for the uploads directory
-const uploadDir = path.join(__dirname, "uploads");
-console.log("Resolved upload directory path:", uploadDir);
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-  console.log("Uploads directory created:", uploadDir);
-}
 
 app.use("/uploads", express.static("uploads")); // Serve uploaded files
 
