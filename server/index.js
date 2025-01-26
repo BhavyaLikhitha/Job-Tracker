@@ -41,7 +41,6 @@ import mongoose from "mongoose";
 import cors from "cors";
 import userRoutes from "./routes/user-routes.js";
 import jobRoutes from "./routes/jobs-routes.js";
-import Grid from "gridfs-stream";
 
 dotenv.config();
 const app = express();
@@ -57,16 +56,7 @@ app.use(cors(corsOptions));
 
 app.use(express.json());
 
-// Initialize GridFS
-let gfs;
-const conn = mongoose.connection;
-conn.once("open", () => {
-  gfs = Grid(conn.db, mongoose.mongo);
-  gfs.collection("uploads"); // Match bucketName in multer-gridfs-storage
-  console.log("GridFS initialized");
-});
-
-// app.use("/uploads", express.static("uploads")); // Serve uploaded files
+app.use("/uploads", express.static("uploads")); // Serve uploaded files
 
 mongoose
   .connect(process.env.MONGO_CONNECTION)
