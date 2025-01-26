@@ -20,8 +20,8 @@ export const addJob = async (req, res) => {
       pay,
       status,
       url,
-      // resume: req.file ? req.file.filename : null,
-      resume: req.file.filename
+      resume: req.file ? req.file.filename : null,
+      // resume: req.file.filename
     });
     // new line added
     if (!req.file) {
