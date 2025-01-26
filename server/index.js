@@ -55,30 +55,15 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 app.use(express.json());
-// Middleware
 
-// app.use(
-//   cors({
-//     origin: "https://job-tracker-coop-search.vercel.app", // Specific origin, not wildcard
-//     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-//     credentials: true, // Important for include credentials mode
-//     allowedHeaders: ["Content-Type", "Authorization"],
-//   })
-// );
+import fs from "fs";
 
-// // Remove the wildcard OPTIONS handler
-// // Replace with a specific preflight handler
-// app.options("/api/users/login", cors()); // Specific route preflight
-
-// // Debugging logs
-// app.use((req, res, next) => {
-//   console.log("Request received with origin:", req.headers.origin);
-//   next();
-// });
-
-// app.options("*", cors()); // Enable CORS preflight for all routes
-// app.use(express.json());
-// app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+// Check and create the uploads directory if it doesn't exist
+const uploadDir = "uploads";
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+  console.log("Uploads directory created.");
+}
 
 app.use("/uploads", express.static("uploads")); // Serve uploaded files
 
@@ -100,9 +85,6 @@ app.options("*", (req, res) => {
   res.header("Access-Control-Allow-Credentials", "true");
   res.sendStatus(200); // Explicitly return HTTP 200 OK
 });
-
-
-
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

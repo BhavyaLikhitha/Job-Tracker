@@ -1,6 +1,12 @@
 import Job from "../models/Job.js";
 
 export const addJob = async (req, res) => {
+  console.log("Request body:", req.body); // Logs job details
+    console.log("Uploaded file:", req.file); // Logs uploaded file details
+    if (!req.file) {
+      return res.status(400).json({ error: "Resume file is required" });
+    }
+
   const { userId } = req.user;
   const { companyName, dateApplied, jobTitle, months, pay, status, url } = req.body;
 
@@ -14,16 +20,20 @@ export const addJob = async (req, res) => {
       pay,
       status,
       url,
-      resume: req.file ? req.file.filename : null,
+      // resume: req.file ? req.file.filename : null,
+      resume: req.file.filename
     });
     // new line added
     if (!req.file) {
       console.warn("No file uploaded!");
     }
-    await newJob.save();
-    res.status(201).json(newJob);
+    const savedJob = await newJob.save();
+    // await newJob.save();
+    res.status(201).json(savedJob);
+    // res.status(201).json(newJob);
   } catch (error) {
-    console.log(error)
+    console.log("error adding new job:",error)
+    // res.status(500).json({ error: "Error adding job" });
     res.status(500).json({ error: "Error adding job" });
   }
 };

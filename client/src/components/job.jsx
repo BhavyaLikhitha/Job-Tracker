@@ -73,8 +73,72 @@ const JobTracker = () => {
     setNewJob({ ...newJob, resume: e.target.files[0] });
   };
 
+  // const addJob = async () => {
+  //   const token = localStorage.getItem("token");
+
+  // if (!token) {
+  //   // Redirect to signup page if the user is not logged in
+  //   navigate("/signup");
+  //   toast.error("Please sign up or log in to add a job.");
+  //   return;
+  // }
+
+  //   if (newJob.companyName && newJob.dateApplied && newJob.jobTitle) {
+  //     try {
+  //       const formData = new FormData();
+  //       formData.append("companyName", newJob.companyName);
+  //       formData.append("dateApplied", newJob.dateApplied);
+  //       formData.append("jobTitle", newJob.jobTitle);
+  //       formData.append("months", newJob.months);
+  //       formData.append("pay", newJob.pay);
+  //       formData.append("status", newJob.status);
+  //       formData.append("url", newJob.url);
+  //       if (newJob.resume) {
+  //         console.log("Adding file:", newJob.resume);
+  //         formData.append("resume", newJob.resume);
+  //       }
+  //       formData.append("userId", userId);
+
+  //       // const response = await fetch("http://localhost:3002/api/jobs/add-job", {
+  //         const response = await fetch("https://job-tracker-api-rho.vercel.app/api/jobs/add-job", {
+  //         method: "POST",
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //         body: formData,
+  //       });
+
+  //       if (response.ok) {
+  //         const addedJob = await response.json();
+  //         console.log("Jobs fetched from backend:", addedJob);
+  //         setJobs([...jobs, addedJob]); // Add the new job to the state
+  //         setNewJob({
+  //           companyName: "",
+  //           dateApplied: "",
+  //           jobTitle: "",
+  //           months: "",
+  //           pay: "",
+  //           status: "applied",
+  //           url: "",
+  //           resume: null,
+  //         });
+  //         setFormVisible(false); // Hide the form after adding the job
+  //         toast.success("Job added successfully");
+  //       } else {
+  //         toast.error("Failed to add job");
+  //       }
+  //     } catch (error) {
+        
+  //       console.log("Error adding job:", error);
+  //       toast.error("An error occurred while adding the job");
+  //     }
+  //   } else {
+  //     toast.error("Please fill in all required fields");
+  //   }
+  // };
+
   const addJob = async () => {
-    const token = localStorage.getItem("token");
+       const token = localStorage.getItem("token");
 
   if (!token) {
     // Redirect to signup page if the user is not logged in
@@ -82,7 +146,6 @@ const JobTracker = () => {
     toast.error("Please sign up or log in to add a job.");
     return;
   }
-
     if (newJob.companyName && newJob.dateApplied && newJob.jobTitle) {
       try {
         const formData = new FormData();
@@ -94,42 +157,28 @@ const JobTracker = () => {
         formData.append("status", newJob.status);
         formData.append("url", newJob.url);
         if (newJob.resume) {
-          console.log("Adding file:", newJob.resume);
-          formData.append("resume", newJob.resume);
+          console.log("Adding file:", newJob.resume); // Logs file before sending
+          formData.append("resume", newJob.resume); // Attach file
         }
-        formData.append("userId", userId);
-
-        // const response = await fetch("http://localhost:3002/api/jobs/add-job", {
-          const response = await fetch("https://job-tracker-api-rho.vercel.app/api/jobs/add-job", {
+  
+        const response = await fetch("https://job-tracker-api-rho.vercel.app/api/jobs/add-job", {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${token}`, // Authorization header
           },
-          body: formData,
+          body: formData, // Pass FormData directly
         });
-
+  
+        const data = await response.json();
         if (response.ok) {
-          const addedJob = await response.json();
-          console.log("Jobs fetched from backend:", addedJob);
-          setJobs([...jobs, addedJob]); // Add the new job to the state
-          setNewJob({
-            companyName: "",
-            dateApplied: "",
-            jobTitle: "",
-            months: "",
-            pay: "",
-            status: "applied",
-            url: "",
-            resume: null,
-          });
-          setFormVisible(false); // Hide the form after adding the job
+          setJobs([...jobs, data]); // Add job to state
           toast.success("Job added successfully");
         } else {
-          toast.error("Failed to add job");
+          console.error("Error response:", data); // Log error details
+          toast.error(data.error || "Failed to add job");
         }
       } catch (error) {
-        
-        console.log("Error adding job:", error);
+        console.error("Error adding job:", error);
         toast.error("An error occurred while adding the job");
       }
     } else {
@@ -137,6 +186,7 @@ const JobTracker = () => {
     }
   };
 
+  
   const updateJobStatus = async (id, newStatus) => {
     try {
       // Make a PUT request to the backend to update the job status
