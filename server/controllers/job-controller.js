@@ -16,7 +16,10 @@ export const addJob = async (req, res) => {
       url,
       resume: req.file ? req.file.filename : null,
     });
-
+    // new line added
+    if (!req.file) {
+      console.warn("No file uploaded!");
+    }
     await newJob.save();
     res.status(201).json(newJob);
   } catch (error) {

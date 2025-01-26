@@ -78,6 +78,8 @@ app.use(express.json());
 
 // app.options("*", cors()); // Enable CORS preflight for all routes
 // app.use(express.json());
+// app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 app.use("/uploads", express.static("uploads")); // Serve uploaded files
 
 mongoose

@@ -94,6 +94,7 @@ const JobTracker = () => {
         formData.append("status", newJob.status);
         formData.append("url", newJob.url);
         if (newJob.resume) {
+          console.log("Adding file:", newJob.resume);
           formData.append("resume", newJob.resume);
         }
         formData.append("userId", userId);
@@ -256,6 +257,13 @@ const JobTracker = () => {
             value={newJob.url}
             onChange={handleInputChange}
           />
+          {/* newly added line */}
+          <input
+  type="file"
+  name="resume"
+  onChange={(e) => setNewJob({ ...newJob, resume: e.target.files[0] })}
+/>
+
           <select name="status" value={newJob.status} onChange={handleInputChange}>
             <option value="applied">📤 Applied</option>
             <option value="ghosted">👻 Ghosted</option>
