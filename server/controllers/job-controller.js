@@ -10,6 +10,7 @@ conn.once("open", () => {
   gfs.collection("uploads"); // Ensure it matches the bucketName in multer-gridfs-storage
 });
 
+
 export const addJob = async (req, res) => {
   console.log("Request body:", req.body); // Logs job details
   console.log("Uploaded file:", req.file); // Logs uploaded file details
@@ -124,14 +125,7 @@ export const getJobs = async (req, res) => {
 //   });
 // };
 
-import mongoose from "mongoose";
-import Grid from "gridfs-stream";
 
-
-conn.once("open", () => {
-  gfs = Grid(conn.db, mongoose.mongo);
-  gfs.collection("uploads"); // Ensure it matches the bucketName used in multer-gridfs-storage
-});
 
 export const downloadResume = (req, res) => {
   const { id } = req.params; // Expecting file ID as a parameter
