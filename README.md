@@ -9,7 +9,6 @@
 ## 🔗 Live Demo
 [👉 Try ApplyTrack Now](https://job-tracker-coop-search.vercel.app/)
 
-
 ## 📷 Screenshots
 
 ### 🎉 Welcome Page
