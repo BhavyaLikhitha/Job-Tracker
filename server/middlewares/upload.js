@@ -19,35 +19,64 @@
 
 // export default upload;
 
+// import multer from "multer";
+// import { fileURLToPath } from "url";
+// import path from "path";
+
+// // Define __dirname for ES modules
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
+
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     const uploadPath = path.join(__dirname, "../uploads/");
+//     // console.log("Saving file to uploads/ directory");
+//     // // Specify the directory where files will be stored
+//     // cb(null, "uploads/"); 
+//     console.log("Absolute path for uploads:", uploadPath);
+//     cb(null, uploadPath);
+//   },
+//   filename: (req, file, cb) => {
+//     // Generate a unique filename using timestamp and original name
+//     cb(null, `${Date.now()}-${file.originalname}`);
+//     console.log("Uploaded file:", req.file);
+//   },
+// });
+
+// // Multer configuration
+// const upload = multer({
+//   storage,
+//   limits: { fileSize: 5 * 1024 * 1024 }, // Set 5MB size limit
+// });
+
+// // Export the configured upload middleware
+// export default upload;
+
+
 import multer from "multer";
-import { fileURLToPath } from "url";
-import path from "path";
+import { GridFsStorage } from "multer-gridfs-storage";
 
-// Define __dirname for ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// MongoDB URI
+const mongoURI = process.env.MONGO_CONNECTION;
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadPath = path.join(__dirname, "../uploads/");
-    // console.log("Saving file to uploads/ directory");
-    // // Specify the directory where files will be stored
-    // cb(null, "uploads/"); 
-    console.log("Absolute path for uploads:", uploadPath);
-    cb(null, uploadPath);
-  },
-  filename: (req, file, cb) => {
-    // Generate a unique filename using timestamp and original name
-    cb(null, `${Date.now()}-${file.originalname}`);
-    console.log("Uploaded file:", req.file);
+// GridFS Storage
+const storage = new GridFsStorage({
+  url: mongoURI,
+  options: { useUnifiedTopology: true },
+  file: (req, file) => {
+    const match = ["application/pdf"]; // Accept only PDF files
+
+    if (match.indexOf(file.mimetype) === -1) {
+      return `${Date.now()}-file-${file.originalname}`;
+    }
+
+    return {
+      bucketName: "uploads", // Bucket to store files (default is `fs`)
+      filename: `${Date.now()}-${file.originalname}`, // Custom filename
+    };
   },
 });
 
-// Multer configuration
-const upload = multer({
-  storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // Set 5MB size limit
-});
+const upload = multer({ storage });
 
-// Export the configured upload middleware
 export default upload;

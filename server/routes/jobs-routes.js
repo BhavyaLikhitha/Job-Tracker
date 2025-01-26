@@ -5,6 +5,10 @@ import { authenticate } from "../services/auth-middleware.js";
 const router = express.Router();
 router.post("/add-job", authenticate, upload.single("resume"), addJob);
 router.get("/get-job", authenticate, getJobs);
-router.get("/download/:fileName", downloadResume);
+router.get("/download/:id", authenticate, downloadResume);
+
+
 router.put("/update-job-status", authenticate, updateJobStatus);
 export default router;
+
+// router.get("/download/:fileName", downloadResume);
