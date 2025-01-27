@@ -417,36 +417,26 @@ const JobTracker = () => {
 
   const addJob = async () => {
     const token = localStorage.getItem("token");
-
+  
     if (!token) {
-      // Redirect to signup page if the user is not logged in
       navigate("/signup");
       toast.error("Please sign up or log in to add a job.");
       return;
     }
-
+  
     if (newJob.companyName && newJob.dateApplied && newJob.jobTitle) {
       try {
-        const formData = new FormData();
-        formData.append("companyName", newJob.companyName);
-        formData.append("dateApplied", newJob.dateApplied);
-        formData.append("jobTitle", newJob.jobTitle);
-        formData.append("months", newJob.months);
-        formData.append("pay", newJob.pay);
-        formData.append("status", newJob.status);
-        formData.append("url", newJob.url);
-        formData.append("userId", userId);
-        console.log("Form data being sent:", newJob);
-
-
+        console.log("Form data being sent:", newJob); // Debugging log
+  
         const response = await fetch("https://job-tracker-api-rho.vercel.app/api/jobs/add-job", {
           method: "POST",
           headers: {
+            "Content-Type": "application/json", // Explicitly set content type for JSON
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(newJob),
+          body: JSON.stringify(newJob), // Send newJob as JSON
         });
-
+  
         if (response.ok) {
           const addedJob = await response.json();
           console.log("Jobs fetched from backend:", addedJob);
@@ -466,13 +456,13 @@ const JobTracker = () => {
           toast.error("Failed to add job");
         }
       } catch (error) {
-        console.log("Error adding job:", error);
+        console.error("Error adding job:", error);
         toast.error("An error occurred while adding the job");
       }
     } else {
       toast.error("Please fill in all required fields");
     }
-  };
+  };  
 
   const updateJobStatus = async (id, newStatus) => {
     try {
