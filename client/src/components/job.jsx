@@ -69,164 +69,71 @@ const JobTracker = () => {
     setNewJob({ ...newJob, [name]: value });
   };
 
-  // const handleFileChange = (e) => {
-  //   setNewJob({ ...newJob, resume: e.target.files[0] });
-  // };
-
-  // const addJob = async () => {
-  //   const token = localStorage.getItem("token");
-
-  // if (!token) {
-  //   // Redirect to signup page if the user is not logged in
-  //   navigate("/signup");
-  //   toast.error("Please sign up or log in to add a job.");
-  //   return;
-  // }
-
-  //   if (newJob.companyName && newJob.dateApplied && newJob.jobTitle) {
-  //     try {
-  //       const formData = new FormData();
-  //       formData.append("companyName", newJob.companyName);
-  //       formData.append("dateApplied", newJob.dateApplied);
-  //       formData.append("jobTitle", newJob.jobTitle);
-  //       formData.append("months", newJob.months);
-  //       formData.append("pay", newJob.pay);
-  //       formData.append("status", newJob.status);
-  //       formData.append("url", newJob.url);
-  //       if (newJob.resume) {
-  //         console.log("Adding file:", newJob.resume);
-  //         formData.append("resume", newJob.resume);
-  //       }
-  //       formData.append("userId", userId);
-
-  //       // const response = await fetch("http://localhost:3002/api/jobs/add-job", {
-  //         const response = await fetch("https://job-tracker-api-rho.vercel.app/api/jobs/add-job", {
-  //         method: "POST",
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //         body: formData,
-  //       });
-
-  //       if (response.ok) {
-  //         const addedJob = await response.json();
-  //         console.log("Jobs fetched from backend:", addedJob);
-  //         setJobs([...jobs, addedJob]); // Add the new job to the state
-  //         setNewJob({
-  //           companyName: "",
-  //           dateApplied: "",
-  //           jobTitle: "",
-  //           months: "",
-  //           pay: "",
-  //           status: "applied",
-  //           url: "",
-  //           resume: null,
-  //         });
-  //         setFormVisible(false); // Hide the form after adding the job
-  //         toast.success("Job added successfully");
-  //       } else {
-  //         toast.error("Failed to add job");
-  //       }
-  //     } catch (error) {
-        
-  //       console.log("Error adding job:", error);
-  //       toast.error("An error occurred while adding the job");
-  //     }
-  //   } else {
-  //     toast.error("Please fill in all required fields");
-  //   }
-  // };
-
+  const handleFileChange = (e) => {
+    setNewJob({ ...newJob, resume: e.target.files[0] });
+  };
 
   const addJob = async () => {
     const token = localStorage.getItem("token");
 
-    if (!token) {
-      navigate("/signup");
-      toast.error("Please sign up or log in to add a job.");
-      return;
-    }
+  if (!token) {
+    // Redirect to signup page if the user is not logged in
+    navigate("/signup");
+    toast.error("Please sign up or log in to add a job.");
+    return;
+  }
 
-    // Validate required fields
-    if (!newJob.companyName || !newJob.dateApplied || !newJob.jobTitle) {
-      toast.error("Please fill in all required fields");
-      return;
-    }
-
-    try {
-      const formData = new FormData();
-      
-      // Add all form fields to FormData
-      Object.keys(newJob).forEach(key => {
-        if (key === 'resume' && newJob[key]) {
-          formData.append('resume', newJob[key], newJob[key].name);
-        } else if (newJob[key] !== null && newJob[key] !== '') {
-          formData.append(key, newJob[key]);
+    if (newJob.companyName && newJob.dateApplied && newJob.jobTitle) {
+      try {
+        const formData = new FormData();
+        formData.append("companyName", newJob.companyName);
+        formData.append("dateApplied", newJob.dateApplied);
+        formData.append("jobTitle", newJob.jobTitle);
+        formData.append("months", newJob.months);
+        formData.append("pay", newJob.pay);
+        formData.append("status", newJob.status);
+        formData.append("url", newJob.url);
+        if (newJob.resume) {
+          console.log("Adding file:", newJob.resume);
+          formData.append("resume", newJob.resume);
         }
-      });
+        formData.append("userId", userId);
 
-      // Log FormData contents for debugging
-      for (let pair of formData.entries()) {
-        console.log(pair[0] + ': ', pair[1]);
-      }
-
-      const response = await fetch("https://job-tracker-api-rho.vercel.app/api/jobs/add-job", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          // Remove Content-Type header - let browser set it with boundary for FormData
-        },
-        body: formData,
-      });
-
-      const responseData = await response.json();
-
-      if (response.ok) {
-        console.log("Job added successfully:", responseData);
-        setJobs(prevJobs => [...prevJobs, responseData]);
-        
-        // Reset form
-        setNewJob({
-          companyName: "",
-          dateApplied: "",
-          jobTitle: "",
-          months: "",
-          pay: "",
-          status: "applied",
-          url: "",
-          resume: null,
+        // const response = await fetch("http://localhost:3002/api/jobs/add-job", {
+          const response = await fetch("https://job-tracker-api-rho.vercel.app/api/jobs/add-job", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
         });
-        
-        setFormVisible(false);
-        toast.success("Job added successfully");
-      } else {
-        console.error("Server error:", responseData);
-        toast.error(responseData.error || "Failed to add job");
-      }
-    } catch (error) {
-      console.error("Error adding job:", error);
-      toast.error("An error occurred while adding the job");
-    }
-  };
 
-  // File input handling with validation
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    
-    if (file) {
-      if (file.type !== 'application/pdf') {
-        toast.error('Please upload only PDF files');
-        e.target.value = ''; // Reset file input
-        return;
+        if (response.ok) {
+          const addedJob = await response.json();
+          console.log("Jobs fetched from backend:", addedJob);
+          setJobs([...jobs, addedJob]); // Add the new job to the state
+          setNewJob({
+            companyName: "",
+            dateApplied: "",
+            jobTitle: "",
+            months: "",
+            pay: "",
+            status: "applied",
+            url: "",
+            resume: null,
+          });
+          setFormVisible(false); // Hide the form after adding the job
+          toast.success("Job added successfully");
+        } else {
+          toast.error("Failed to add job");
+        }
+      } catch (error) {
+        
+        console.log("Error adding job:", error);
+        toast.error("An error occurred while adding the job");
       }
-      
-      if (file.size > 5 * 1024 * 1024) { // 5MB limit
-        toast.error('File size should be less than 5MB');
-        e.target.value = ''; // Reset file input
-        return;
-      }
-      
-      setNewJob(prev => ({ ...prev, resume: file }));
+    } else {
+      toast.error("Please fill in all required fields");
     }
   };
   
