@@ -9,17 +9,30 @@ conn.once("open", () => {
   gfs = Grid(conn.db, mongoose.mongo);
   gfs.collection("uploads"); // Ensure it matches the bucketName in multer-gridfs-storage
 });
+
 export const addJob = async (req, res) => {
-  console.log("Uploaded file details:", req.file); // Log uploaded file details for debugging
-
-  // Check if the file was uploaded successfully
-  if (!req.file || !req.file._id) {
-    console.error("File upload failed, no file or _id found");
-    return res.status(400).json({ error: "Resume file upload failed" });
-  }
-
   const { userId } = req.user;
   const { companyName, dateApplied, jobTitle, months, pay, status, url } = req.body;
+
+  console.log("Uploaded file details:", req.file); // Debug uploaded file details
+
+  // Fallback to querying the database if req.file._id is missing
+  let fileId = req.file?._id || req.file?.id;
+
+  if (!fileId) {
+    console.error("File ID not attached to req.file, querying GridFS...");
+    try {
+      const file = await gfs.files.findOne({ filename: req.file.filename }); // Query by filename
+      if (!file) {
+        console.error("File not found in GridFS");
+        return res.status(400).json({ error: "Resume file not found" });
+      }
+      fileId = file._id; // Use the _id from the database
+    } catch (error) {
+      console.error("Error querying GridFS:", error);
+      return res.status(500).json({ error: "Error retrieving file from GridFS" });
+    }
+  }
 
   try {
     const newJob = new Job({
@@ -31,11 +44,11 @@ export const addJob = async (req, res) => {
       pay,
       status,
       url,
-      resume: req.file._id, // Save GridFS file ObjectId in the database
+      resume: fileId, // Save GridFS file ID
     });
 
     const savedJob = await newJob.save();
-    console.log("Job saved successfully:", savedJob); // Debug successful save
+    console.log("Job saved successfully:", savedJob);
     res.status(201).json(savedJob);
   } catch (error) {
     console.error("Error saving job:", error);
