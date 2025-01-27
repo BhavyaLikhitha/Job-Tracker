@@ -444,7 +444,7 @@ const JobTracker = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-          body: formData,
+          body: JSON.stringify(newJob),
         });
 
         if (response.ok) {
