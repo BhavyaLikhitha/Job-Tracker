@@ -45,31 +45,52 @@ import mongoose from "mongoose";
 // export default mongoose.model("Job", JobSchema);
 
 
+// Job.js
+import mongoose from "mongoose";
+
 const JobSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  companyName: String,
+  userId: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: "User", 
+    required: true 
+  },
+  companyName: { 
+    type: String, 
+    required: true 
+  },
   dateApplied: {
     type: Date,
-    set: (value) => {
-      console.log("Raw value for dateApplied:", value); 
-      if (!value) return null; // Handle null or undefined
+    required: true,
+    set: function(value) {
+      if (!value) return null;
       const date = new Date(value);
-      if (isNaN(date)) {
-        throw new Error("Invalid date format"); // Handle invalid dates
-      }
-      return new Date(date.toISOString().split("T")[0]); // Ensure only the date part
-    },
+      return isNaN(date) ? null : date;
+    }
   },
-  jobTitle: String,
-  months: Number,
-  pay: Number,
+  jobTitle: { 
+    type: String, 
+    required: true 
+  },
+  months: { 
+    type: Number,
+    min: 0
+  },
+  pay: { 
+    type: Number,
+    min: 0
+  },
   status: {
     type: String,
     enum: ["applied", "rejected", "no response", "ghosted", "interview going on", "Job"],
-    default: "applied",
+    default: "applied"
   },
-  url: String, // Job description URL
-  resume: { type: mongoose.Schema.Types.ObjectId, ref: "uploads" }, // Reference GridFS file ID
+  url: String,
+  resume: { 
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "uploads.files"
+  }
+}, {
+  timestamps: true
 });
 
 export default mongoose.model("Job", JobSchema);

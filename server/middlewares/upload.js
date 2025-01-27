@@ -81,48 +81,58 @@
 
 // export default upload;
 
+// upload.js
 import { GridFsStorage } from "multer-gridfs-storage";
 import multer from "multer";
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import crypto from 'crypto';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const mongoURI = process.env.MONGO_CONNECTION;
 
 const storage = new GridFsStorage({
   url: mongoURI,
   options: { 
-    useUnifiedTopology: true,
-    useNewUrlParser: true
+    useNewUrlParser: true,
+    useUnifiedTopology: true
   },
   file: (req, file) => {
     return new Promise((resolve, reject) => {
-      console.log("Processing file:", file.originalname);
-      
-      if (file.mimetype !== "application/pdf") {
-        return reject(new Error('Only PDF files are allowed'));
-      }
-
-      const fileInfo = {
-        filename: `${Date.now()}-${file.originalname}`,
-        bucketName: 'uploads',
-        metadata: { originalname: file.originalname }
-      };
-
-      resolve(fileInfo);
+      crypto.randomBytes(16, (err, buf) => {
+        if (err) {
+          return reject(err);
+        }
+        
+        const filename = buf.toString('hex') + '-' + file.originalname;
+        const fileInfo = {
+          filename: filename,
+          bucketName: 'uploads',
+          metadata: {
+            originalname: file.originalname,
+            userId: req.user.userId // Add user ID to metadata
+          }
+        };
+        
+        resolve(fileInfo);
+      });
     });
   }
 });
 
-// Add error handling to multer
-const upload = multer({ 
+// Create multer upload instance
+const upload = multer({
   storage,
-  fileFilter: (req, file, cb) => {
-    if (file.mimetype !== "application/pdf") {
-      cb(new Error('Only PDF files are allowed'), false);
-      return;
-    }
-    cb(null, true);
-  },
   limits: {
     fileSize: 5 * 1024 * 1024 // 5MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype !== 'application/pdf') {
+      return cb(new Error('Only PDF files are allowed'), false);
+    }
+    cb(null, true);
   }
 });
 

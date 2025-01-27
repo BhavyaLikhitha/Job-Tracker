@@ -10,56 +10,56 @@
 //   gfs.collection("uploads"); // Ensure it matches the bucketName in multer-gridfs-storage
 // });
 
-import Job from "../models/Job.js";
-import mongoose from "mongoose";
-import Grid from "gridfs-stream";
+// import Job from "../models/Job.js";
+// import mongoose from "mongoose";
+// import Grid from "gridfs-stream";
 
-// Initialize GridFS
-const conn = mongoose.connection;
-let gfs;
+// // Initialize GridFS
+// const conn = mongoose.connection;
+// let gfs;
 
-conn.once("open", () => {
-  gfs = Grid(conn.db, mongoose.mongo);
-  gfs.collection("uploads"); // Collection name
-});
+// conn.once("open", () => {
+//   gfs = Grid(conn.db, mongoose.mongo);
+//   gfs.collection("uploads"); // Collection name
+// });
 
-export const addJob = async (req, res) => {
-  const { userId } = req.user;
-  const { companyName, dateApplied, jobTitle, months, pay, status, url } = req.body;
+// export const addJob = async (req, res) => {
+//   const { userId } = req.user;
+//   const { companyName, dateApplied, jobTitle, months, pay, status, url } = req.body;
 
-  console.log("Uploaded file details:", req.file);
+//   console.log("Uploaded file details:", req.file);
 
-  try {
-    // Wait for the file to be fully processed
-    const file = await mongoose.connection.db
-      .collection('uploads.files')
-      .findOne({ filename: req.file.filename });
+//   try {
+//     // Wait for the file to be fully processed
+//     const file = await mongoose.connection.db
+//       .collection('uploads.files')
+//       .findOne({ filename: req.file.filename });
 
-    if (!file) {
-      console.error("File not found in GridFS");
-      return res.status(400).json({ error: "Resume file not found" });
-    }
+//     if (!file) {
+//       console.error("File not found in GridFS");
+//       return res.status(400).json({ error: "Resume file not found" });
+//     }
 
-    const newJob = new Job({
-      userId,
-      companyName,
-      dateApplied,
-      jobTitle,
-      months,
-      pay,
-      status,
-      url,
-      resume: file._id, // Use the _id from the found file
-    });
+//     const newJob = new Job({
+//       userId,
+//       companyName,
+//       dateApplied,
+//       jobTitle,
+//       months,
+//       pay,
+//       status,
+//       url,
+//       resume: file._id, // Use the _id from the found file
+//     });
 
-    const savedJob = await newJob.save();
-    console.log("Job saved successfully:", savedJob);
-    res.status(201).json(savedJob);
-  } catch (error) {
-    console.error("Error saving job:", error);
-    res.status(500).json({ error: "Failed to add job: " + error.message });
-  }
-};
+//     const savedJob = await newJob.save();
+//     console.log("Job saved successfully:", savedJob);
+//     res.status(201).json(savedJob);
+//   } catch (error) {
+//     console.error("Error saving job:", error);
+//     res.status(500).json({ error: "Failed to add job: " + error.message });
+//   }
+// };
 
 // export const addJob = async (req, res) => {
 //   console.log("Request body:", req.body); // Logs job details
@@ -142,6 +142,102 @@ export const addJob = async (req, res) => {
 // };
 
 // import mongoose from "mongoose";
+// job-controller.js
+import Job from "../models/Job.js";
+import mongoose from "mongoose";
+import Grid from "gridfs-stream";
+
+const conn = mongoose.connection;
+let gfs;
+
+conn.once("open", () => {
+  gfs = Grid(conn.db, mongoose.mongo);
+  gfs.collection("uploads");
+});
+
+export const addJob = async (req, res) => {
+  try {
+    const { userId } = req.user;
+    const { companyName, dateApplied, jobTitle, months, pay, status, url } = req.body;
+
+    // Initialize fileId as null
+    let fileId = null;
+
+    // Check if a file was uploaded
+    if (req.file) {
+      // Wait for the file to be processed
+      const file = await mongoose.connection.db
+        .collection('uploads.files')
+        .findOne({ filename: req.file.filename });
+
+      if (!file) {
+        return res.status(400).json({ error: "File upload failed" });
+      }
+
+      fileId = file._id;
+    }
+
+    // Create new job document
+    const newJob = new Job({
+      userId,
+      companyName,
+      dateApplied,
+      jobTitle,
+      months: months || undefined,
+      pay: pay || undefined,
+      status,
+      url: url || undefined,
+      resume: fileId // Will be null if no file was uploaded
+    });
+
+    // Save the job
+    const savedJob = await newJob.save();
+
+    // Send response
+    res.status(201).json(savedJob);
+
+  } catch (error) {
+    console.error("Error in addJob:", error);
+    res.status(500).json({ 
+      error: "Failed to add job", 
+      details: error.message 
+    });
+  }
+};
+
+// Add download endpoint
+export const downloadResume = async (req, res) => {
+  try {
+    const fileId = new mongoose.Types.ObjectId(req.params.fileId);
+    
+    const file = await gfs.files.findOne({ _id: fileId });
+    if (!file) {
+      return res.status(404).json({ error: "File not found" });
+    }
+
+    // Set the proper headers
+    res.set({
+      'Content-Type': file.contentType,
+      'Content-Disposition': `attachment; filename="${file.filename}"`,
+    });
+
+    // Create download stream
+    const downloadStream = gfs.createReadStream({ _id: fileId });
+    
+    // Pipe the file to the response
+    downloadStream.pipe(res);
+    
+    // Handle errors
+    downloadStream.on('error', (error) => {
+      console.error("Error streaming file:", error);
+      res.status(500).json({ error: "Error downloading file" });
+    });
+
+  } catch (error) {
+    console.error("Download error:", error);
+    res.status(500).json({ error: "Error accessing file" });
+  }
+};
 
 export const getJobs = async (req, res) => {
   const { userId } = req.user; // Extracted from token
@@ -177,62 +273,62 @@ export const getJobs = async (req, res) => {
 
 
 
-export const downloadResume = (req, res) => {
-  const { id } = req.params; // Expecting file ID as a parameter
+// export const downloadResume = (req, res) => {
+//   const { id } = req.params; // Expecting file ID as a parameter
 
-  // Find the file in GridFS by ID
-  gfs.files.findOne({ _id: mongoose.Types.ObjectId.createFromHexString(id)  }, (err, file) => {
-    if (err) {
-      console.error("Error finding file:", err);
-      return res.status(500).json({ error: "Error finding file" });
-    }
+//   // Find the file in GridFS by ID
+//   gfs.files.findOne({ _id: mongoose.Types.ObjectId.createFromHexString(id)  }, (err, file) => {
+//     if (err) {
+//       console.error("Error finding file:", err);
+//       return res.status(500).json({ error: "Error finding file" });
+//     }
 
-    if (!file) {
-      console.error("File not found");
-      return res.status(404).json({ error: "File not found" });
-    }
+//     if (!file) {
+//       console.error("File not found");
+//       return res.status(404).json({ error: "File not found" });
+//     }
 
-    // Check if the file type is supported (e.g., application/pdf)
-    if (file.contentType !== "application/pdf") {
-      return res.status(400).json({ error: "Unsupported file type" });
-    }
+//     // Check if the file type is supported (e.g., application/pdf)
+//     if (file.contentType !== "application/pdf") {
+//       return res.status(400).json({ error: "Unsupported file type" });
+//     }
 
-    // Stream the file to the response
-    const readStream = gfs.createReadStream({ _id: file._id });
-    res.setHeader("Content-Disposition", `attachment; filename="${file.filename}"`);
-    readStream.pipe(res);
+//     // Stream the file to the response
+//     const readStream = gfs.createReadStream({ _id: file._id });
+//     res.setHeader("Content-Disposition", `attachment; filename="${file.filename}"`);
+//     readStream.pipe(res);
 
-    // Handle streaming errors
-    readStream.on("error", (streamErr) => {
-      console.error("Error streaming file:", streamErr);
-      res.status(500).json({ error: "Error streaming file" });
-    });
-  });
-};
+//     // Handle streaming errors
+//     readStream.on("error", (streamErr) => {
+//       console.error("Error streaming file:", streamErr);
+//       res.status(500).json({ error: "Error streaming file" });
+//     });
+//   });
+// };
 
 
-export const updateJobStatus = async (req, res) => {
-  const { jobId, status } = req.body; // Extract jobId and status from the request body
+// export const updateJobStatus = async (req, res) => {
+//   const { jobId, status } = req.body; // Extract jobId and status from the request body
 
-  if (!jobId || !status) {
-    return res.status(400).json({ error: "Job ID and status are required" });
-  }
+//   if (!jobId || !status) {
+//     return res.status(400).json({ error: "Job ID and status are required" });
+//   }
 
-  try {
-    // Find the job by ID and update its status
-    const updatedJob = await Job.findByIdAndUpdate(
-      jobId,
-      { status },
-      { new: true } // Return the updated document
-    );
+//   try {
+//     // Find the job by ID and update its status
+//     const updatedJob = await Job.findByIdAndUpdate(
+//       jobId,
+//       { status },
+//       { new: true } // Return the updated document
+//     );
 
-    if (!updatedJob) {
-      return res.status(404).json({ error: "Job not found" });
-    }
+//     if (!updatedJob) {
+//       return res.status(404).json({ error: "Job not found" });
+//     }
 
-    res.status(200).json({ message: "Job status updated successfully", updatedJob });
-  } catch (error) {
-    console.error("Error updating job status:", error);
-    res.status(500).json({ error: "Error updating job status" });
-  }
-};
+//     res.status(200).json({ message: "Job status updated successfully", updatedJob });
+//   } catch (error) {
+//     console.error("Error updating job status:", error);
+//     res.status(500).json({ error: "Error updating job status" });
+//   }
+// };
