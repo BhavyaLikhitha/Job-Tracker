@@ -108,6 +108,11 @@ export const addJob = async (req, res) => {
   const { userId } = req.user;
   const { companyName, dateApplied, jobTitle, months, pay, status, url } = req.body;
 
+  // Add validation for required fields
+  if (!companyName || !jobTitle || !months || !pay || !url) {
+    return res.status(400).json({ error: "All required fields must be provided." });
+  }
+
   try {
     const newJob = new Job({
       userId,
@@ -117,17 +122,16 @@ export const addJob = async (req, res) => {
       months,
       pay,
       status,
-      url
+      url,
     });
 
     const savedJob = await newJob.save();
     res.status(201).json(savedJob);
   } catch (error) {
-    console.log("error adding new job:", error);
+    console.error("Error adding new job:", error);
     res.status(500).json({ error: "Error adding job" });
   }
 };
-
 import mongoose from "mongoose";
 
 export const getJobs = async (req, res) => {

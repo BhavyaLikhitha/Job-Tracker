@@ -47,11 +47,11 @@ import mongoose from "mongoose";
 
 const JobSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  companyName: String,
+  companyName: { type: String, required: true }, // Required field
   dateApplied: {
     type: Date,
     set: (value) => {
-      console.log("Raw value for dateApplied:", value); 
+      console.log("Raw value for dateApplied:", value);
       if (!value) return null; // Handle null or undefined
       const date = new Date(value);
       if (isNaN(date)) {
@@ -60,15 +60,15 @@ const JobSchema = new mongoose.Schema({
       return new Date(date.toISOString().split("T")[0]); // Ensure only the date part
     },
   },
-  jobTitle: String,
-  months: Number,
-  pay: Number,
+  jobTitle: { type: String, required: true }, // Required field
+  months: { type: Number, required: true }, // Required field
+  pay: { type: Number, required: true }, // Required field
   status: {
     type: String,
     enum: ["applied", "rejected", "no response", "ghosted", "interview going on", "Job"],
     default: "applied",
   },
-  url: String // Job description URL
+  url: { type: String, required: true } // Required field
 });
 
 export default mongoose.model("Job", JobSchema);

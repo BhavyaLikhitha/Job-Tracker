@@ -436,6 +436,8 @@ const JobTracker = () => {
         formData.append("status", newJob.status);
         formData.append("url", newJob.url);
         formData.append("userId", userId);
+        console.log("Form data being sent:", newJob);
+
 
         const response = await fetch("https://job-tracker-api-rho.vercel.app/api/jobs/add-job", {
           method: "POST",
