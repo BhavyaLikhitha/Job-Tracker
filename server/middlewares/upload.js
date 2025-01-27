@@ -84,28 +84,46 @@
 import { GridFsStorage } from "multer-gridfs-storage";
 import multer from "multer";
 
-// MongoDB URI
 const mongoURI = process.env.MONGO_CONNECTION;
 
-// GridFS Storage
 const storage = new GridFsStorage({
   url: mongoURI,
-  options: { useUnifiedTopology: true }, // Add this to avoid warnings
-  file: (req, file) => {
-    console.log("Processing file:", file.originalname); 
-    const match = ["application/pdf"]; // Accept only PDF files
-
-    if (match.indexOf(file.mimetype) === -1) {
-      return null; // Reject unsupported files
-    }
-
-    return {
-      bucketName: "uploads", // Ensure this matches your GridFS bucket
-      filename: `${Date.now()}-${file.originalname}`, // Generate unique filename
-    };
+  options: { 
+    useUnifiedTopology: true,
+    useNewUrlParser: true
   },
+  file: (req, file) => {
+    return new Promise((resolve, reject) => {
+      console.log("Processing file:", file.originalname);
+      
+      if (file.mimetype !== "application/pdf") {
+        return reject(new Error('Only PDF files are allowed'));
+      }
+
+      const fileInfo = {
+        filename: `${Date.now()}-${file.originalname}`,
+        bucketName: 'uploads',
+        metadata: { originalname: file.originalname }
+      };
+
+      resolve(fileInfo);
+    });
+  }
 });
 
-const upload = multer({ storage });
+// Add error handling to multer
+const upload = multer({ 
+  storage,
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype !== "application/pdf") {
+      cb(new Error('Only PDF files are allowed'), false);
+      return;
+    }
+    cb(null, true);
+  },
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB limit
+  }
+});
 
 export default upload;
