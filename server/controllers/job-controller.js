@@ -13,7 +13,7 @@ export const addJob = async (req, res) => {
   console.log("Uploaded file details:", req.file); // Log uploaded file details for debugging
 
   // Check if the file was uploaded successfully
-  if (!req.file || !req.file.id) {
+  if (!req.file || !req.file._id) {
     console.error("File upload failed, no file or _id found");
     return res.status(400).json({ error: "Resume file upload failed" });
   }
@@ -31,7 +31,7 @@ export const addJob = async (req, res) => {
       pay,
       status,
       url,
-      resume: req.file.id, // Save GridFS file ID in the database
+      resume: req.file._id, // Save GridFS file ObjectId in the database
     });
 
     const savedJob = await newJob.save();
@@ -42,6 +42,7 @@ export const addJob = async (req, res) => {
     res.status(500).json({ error: "Failed to add job" });
   }
 };
+
 
 
 // export const addJob = async (req, res) => {

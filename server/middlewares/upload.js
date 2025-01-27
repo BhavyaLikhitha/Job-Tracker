@@ -92,6 +92,7 @@ const storage = new GridFsStorage({
   url: mongoURI,
   options: { useUnifiedTopology: true }, // Add this to avoid warnings
   file: (req, file) => {
+    console.log("Processing file:", file.originalname); 
     const match = ["application/pdf"]; // Accept only PDF files
 
     if (match.indexOf(file.mimetype) === -1) {
