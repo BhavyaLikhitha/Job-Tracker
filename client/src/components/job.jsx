@@ -623,7 +623,7 @@ const JobTracker = () => {
                 {/* <td>{formatDateToEST(job.dateApplied)}</td> */}
                 <td>{new Date(job.dateApplied).toISOString().split("T")[0]}</td>
 
-                <td>{job.dateApplied}</td>
+                {/* <td>{job.dateApplied}</td> */}
 
                 <td>{job.jobTitle}</td>
                 <td>{job.months}</td>
