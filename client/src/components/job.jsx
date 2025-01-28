@@ -495,7 +495,12 @@ const JobTracker = () => {
   const getStatusClass = (status) => {
     return `status-dropdown ${status.replace(/\s+/g, "-")}`;
   };
-
+  const formatDateToEST = (dateString) => {
+    const date = new Date(dateString);
+    const options = { timeZone: "America/New_York", year: "numeric", month: "2-digit", day: "2-digit" };
+    return date.toLocaleDateString("en-US", options);
+  };
+  
   return (
     <div className="job-tracker">
       <div className="stats">
@@ -618,7 +623,8 @@ const JobTracker = () => {
             {jobs.map((job) => (
               <tr key={job._id}>
                 <td>{job.companyName}</td>
-                <td>{new Date(job.dateApplied).toLocaleDateString()}</td>
+                {/* <td>{new Date(job.dateApplied).toLocaleDateString()}</td> */}
+                <td>{formatDateToEST(job.dateApplied)}</td>
                 <td>{job.jobTitle}</td>
                 <td>{job.months}</td>
                 <td>{job.pay}</td>
