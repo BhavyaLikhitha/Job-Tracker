@@ -495,7 +495,7 @@ const JobTracker = () => {
   const getStatusClass = (status) => {
     return `status-dropdown ${status.replace(/\s+/g, "-")}`;
   };
-
+ 
   
   return (
     <div className="job-tracker">
@@ -621,6 +621,8 @@ const JobTracker = () => {
                 <td>{job.companyName}</td>
                 {/* <td>{new Date(job.dateApplied).toLocaleDateString()}</td> */}
                 {/* <td>{formatDateToEST(job.dateApplied)}</td> */}
+                <td>{new Date(job.dateApplied).toISOString().split("T")[0]}</td>
+
                 <td>{job.dateApplied}</td>
 
                 <td>{job.jobTitle}</td>

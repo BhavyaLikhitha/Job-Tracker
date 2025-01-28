@@ -154,63 +154,29 @@ import mongoose from "mongoose";
 //   }
 // };
 
-// export const getJobs = async (req, res) => {
-//   const { userId } = req.user; // Extracted from token
-//   console.log("Decoded User ID:", userId); // Debugging
-
-//   if (!userId) {
-//     return res.status(400).json({ error: "User ID not found in request" });
-//   }
-
-//   try {
-//     // Ensure proper creation of ObjectId
-//     const objectId = mongoose.Types.ObjectId.createFromHexString(userId);
-
-//     // Fetch jobs and sort by dateApplied in descending order
-//     const jobs = await Job.find({ userId: objectId }).sort({ dateApplied: -1 });
-
-//     console.log("Jobs found for user:", jobs); // Debugging
-//     res.status(200).json(jobs);
-//   } catch (error) {
-//     console.error("Error fetching jobs:", error);
-//     res.status(500).json({ error: "Error fetching jobs" });
-//   }
-// };
-
 export const getJobs = async (req, res) => {
-  const { userId } = req.user;
-  console.log("Decoded User ID:", userId);
+  const { userId } = req.user; // Extracted from token
+  console.log("Decoded User ID:", userId); // Debugging
 
   if (!userId) {
     return res.status(400).json({ error: "User ID not found in request" });
   }
 
   try {
+    // Ensure proper creation of ObjectId
     const objectId = mongoose.Types.ObjectId.createFromHexString(userId);
+
+    // Fetch jobs and sort by dateApplied in descending order
     const jobs = await Job.find({ userId: objectId }).sort({ dateApplied: -1 });
 
-    // Convert `dateApplied` to EST using Intl.DateTimeFormat
-    const jobsWithEST = jobs.map((job) => {
-      const dateEST = new Intl.DateTimeFormat("en-US", {
-        timeZone: "America/New_York",
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-      }).format(new Date(job.dateApplied));
-
-      return {
-        ...job._doc,
-        dateApplied: dateEST,
-      };
-    });
-
-    console.log("Jobs found for user:", jobsWithEST);
-    res.status(200).json(jobsWithEST);
+    console.log("Jobs found for user:", jobs); // Debugging
+    res.status(200).json(jobs);
   } catch (error) {
     console.error("Error fetching jobs:", error);
     res.status(500).json({ error: "Error fetching jobs" });
   }
 };
+
 
 
 export const updateJobStatus = async (req, res) => {
