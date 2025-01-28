@@ -177,30 +177,34 @@ import mongoose from "mongoose";
 //   }
 // };
 
-import moment from "moment-timezone";
-
 export const getJobs = async (req, res) => {
-  const { userId } = req.user; // Extracted from token
-  console.log("Decoded User ID:", userId); // Debugging
+  const { userId } = req.user;
+  console.log("Decoded User ID:", userId);
 
   if (!userId) {
     return res.status(400).json({ error: "User ID not found in request" });
   }
 
   try {
-    // Ensure proper creation of ObjectId
     const objectId = mongoose.Types.ObjectId.createFromHexString(userId);
-
-    // Fetch jobs and sort by dateApplied in descending order
     const jobs = await Job.find({ userId: objectId }).sort({ dateApplied: -1 });
 
-    // Convert `dateApplied` to EST for all jobs
-    const jobsWithEST = jobs.map((job) => ({
-      ...job._doc, // Spread the job document to retain other fields
-      dateApplied: moment(job.dateApplied).tz("America/New_York").format("YYYY-MM-DD"), // Format to EST
-    }));
+    // Convert `dateApplied` to EST using Intl.DateTimeFormat
+    const jobsWithEST = jobs.map((job) => {
+      const dateEST = new Intl.DateTimeFormat("en-US", {
+        timeZone: "America/New_York",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }).format(new Date(job.dateApplied));
 
-    console.log("Jobs found for user:", jobsWithEST); // Debugging
+      return {
+        ...job._doc,
+        dateApplied: dateEST,
+      };
+    });
+
+    console.log("Jobs found for user:", jobsWithEST);
     res.status(200).json(jobsWithEST);
   } catch (error) {
     console.error("Error fetching jobs:", error);
