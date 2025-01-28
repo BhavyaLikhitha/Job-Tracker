@@ -154,6 +154,31 @@ import mongoose from "mongoose";
 //   }
 // };
 
+// export const getJobs = async (req, res) => {
+//   const { userId } = req.user; // Extracted from token
+//   console.log("Decoded User ID:", userId); // Debugging
+
+//   if (!userId) {
+//     return res.status(400).json({ error: "User ID not found in request" });
+//   }
+
+//   try {
+//     // Ensure proper creation of ObjectId
+//     const objectId = mongoose.Types.ObjectId.createFromHexString(userId);
+
+//     // Fetch jobs and sort by dateApplied in descending order
+//     const jobs = await Job.find({ userId: objectId }).sort({ dateApplied: -1 });
+
+//     console.log("Jobs found for user:", jobs); // Debugging
+//     res.status(200).json(jobs);
+//   } catch (error) {
+//     console.error("Error fetching jobs:", error);
+//     res.status(500).json({ error: "Error fetching jobs" });
+//   }
+// };
+
+import moment from "moment-timezone";
+
 export const getJobs = async (req, res) => {
   const { userId } = req.user; // Extracted from token
   console.log("Decoded User ID:", userId); // Debugging
@@ -169,14 +194,19 @@ export const getJobs = async (req, res) => {
     // Fetch jobs and sort by dateApplied in descending order
     const jobs = await Job.find({ userId: objectId }).sort({ dateApplied: -1 });
 
-    console.log("Jobs found for user:", jobs); // Debugging
-    res.status(200).json(jobs);
+    // Convert `dateApplied` to EST for all jobs
+    const jobsWithEST = jobs.map((job) => ({
+      ...job._doc, // Spread the job document to retain other fields
+      dateApplied: moment(job.dateApplied).tz("America/New_York").format("YYYY-MM-DD"), // Format to EST
+    }));
+
+    console.log("Jobs found for user:", jobsWithEST); // Debugging
+    res.status(200).json(jobsWithEST);
   } catch (error) {
     console.error("Error fetching jobs:", error);
     res.status(500).json({ error: "Error fetching jobs" });
   }
 };
-
 
 
 export const updateJobStatus = async (req, res) => {
