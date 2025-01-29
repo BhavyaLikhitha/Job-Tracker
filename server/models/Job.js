@@ -61,14 +61,14 @@ const JobSchema = new mongoose.Schema({
     },
   },
   jobTitle: { type: String, required: true }, // Required field
-  months: { type: Number, required: true }, // Required field
-  pay: { type: Number, required: true }, // Required field
+  months: { type: Number }, // Required field
+  pay: { type: Number}, // Required field
   status: {
     type: String,
     enum: ["applied", "rejected", "no response", "ghosted", "interview going on", "Job"],
     default: "applied",
   },
-  url: { type: String, required: true } // Required field
+  url: { type: String } // Required field
 });
 
 export default mongoose.model("Job", JobSchema);
