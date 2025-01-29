@@ -109,7 +109,7 @@ export const addJob = async (req, res) => {
   const { companyName, dateApplied, jobTitle, months, pay, status, url } = req.body;
 
   // Add validation for required fields
-  if (!companyName || !jobTitle || !months || !pay || !url) {
+  if (!companyName || !jobTitle ) {
     return res.status(400).json({ error: "All required fields must be provided." });
   }
 

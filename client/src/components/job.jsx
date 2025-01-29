@@ -445,10 +445,10 @@ const JobTracker = () => {
             companyName: "",
             dateApplied: "",
             jobTitle: "",
-            months: "",
-            pay: "",
+            months: "" || "",
+            pay: "" || "",
             status: "applied",
-            url: "",
+            url: "" || "",
           });
           setFormVisible(false); // Hide the form after adding the job
           toast.success("Job added successfully");
