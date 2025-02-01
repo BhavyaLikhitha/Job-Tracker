@@ -171,27 +171,25 @@ export const getJobs = async (req, res) => {
     const jobs = await Job.find({ userId: objectId }).sort({ dateApplied: -1 });
 
     // console.log("Jobs found for user:", jobs); // Debugging
-      // Get today's date in UTC format (YYYY-MM-DD)
-      const today = new Date();
-      today.setHours(0, 0, 0, 0); // Reset to midnight in local time
-      
-      const todayString = today.toISOString().split("T")[0]; // Convert to YYYY-MM-DD
-      
-      console.log("Today's Date (Local EST):", todayString); // Debugging
-      
+     // Convert today's date to YYYY-MM-DD format in EST (no UTC shift)
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Reset time to local midnight
+    const todayString = today.toLocaleDateString("en-CA"); // ✅ Correct format
 
-      // Count jobs applied today
-     // Count jobs applied today (adjust for timezone)
+    console.log("Today's Date (Local EST):", todayString); // Debugging
+
+    // Count jobs applied today (adjusted for timezone)
     const jobsAppliedToday = jobs.filter((job) => {
       const jobDate = new Date(job.dateApplied);
       jobDate.setHours(0, 0, 0, 0); // Reset to local midnight
-      const jobDateString = jobDate.toISOString().split("T")[0];
+      const jobDateString = jobDate.toLocaleDateString("en-CA"); // ✅ Correct format
 
       console.log(`Comparing jobDate=${jobDateString} with today=${todayString}`); // Debugging
       return jobDateString === todayString;
     }).length;
 
     console.log("Jobs Applied Today:", jobsAppliedToday); // Debugging
+
 
       res.status(200).json({ jobs, jobsAppliedToday });
     // res.status(200).json(jobs);
