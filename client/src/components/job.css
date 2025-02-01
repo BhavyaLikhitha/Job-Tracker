@@ -11,7 +11,7 @@
   }
   
   .stat-box {
-    gap:15px;
+    gap:10px;
     background-color: white; 
     border: 1px solid rgba(154, 235, 147, 0.9);
     border-radius: 10px;
@@ -19,7 +19,7 @@
     font-size: 22px;
     padding: 10px 15px;
     text-align: center;
-    width: 22%;
+    width: 17%;
     color: black;
     font-weight: light;
     box-shadow: 
@@ -177,7 +177,9 @@
       height: auto; /* Let height adjust dynamically */
       padding: 15px;
     }
-  
+    .jobs-applied-today{
+      display: none !important;
+    }
     /* Table styles for better readability on mobile */
     /* table {
       width: 400px !important;

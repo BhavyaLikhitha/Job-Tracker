@@ -68,6 +68,7 @@ const JobSchema = new mongoose.Schema({
     enum: ["applied", "rejected", "no response", "ghosted", "interview going on", "Job"],
     default: "applied",
   },
+  source:{type:String, required:true},
   url: { type: String } // Required field
 });
 

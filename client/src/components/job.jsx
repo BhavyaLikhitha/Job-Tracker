@@ -363,6 +363,7 @@ const JobTracker = () => {
     months: "",
     pay: "",
     status: "applied",
+    source: "", // Added field
     url: "",
   });
   const [formVisible, setFormVisible] = useState(false);
@@ -448,6 +449,7 @@ const JobTracker = () => {
             months: "" || "",
             pay: "" || "",
             status: "applied",
+            source:"",
             url: "" || "",
           });
           setFormVisible(false); // Hide the form after adding the job
@@ -495,11 +497,20 @@ const JobTracker = () => {
   const getStatusClass = (status) => {
     return `status-dropdown ${status.replace(/\s+/g, "-")}`;
   };
- 
+  const jobsAppliedToday = jobs.filter((job) => {
+    const today = new Date().toISOString().split("T")[0];
+    return job.dateApplied === today;
+  }).length;
+  
   
   return (
     <div className="job-tracker">
       <div className="stats">
+      <div className="stat-box jobs-applied-today">
+  <h3>Jobs Applied Today</h3>
+  <p>{jobsAppliedToday}</p>
+</div>
+
         <div className="stat-box">
           <h3>Total Jobs Applied</h3>
           <p>{jobs.length}</p>
@@ -576,6 +587,13 @@ const JobTracker = () => {
             onChange={handleInputChange}
           />
           <input
+  type="text"
+  name="source"
+  placeholder="Job Source"
+  value={newJob.source}
+  onChange={handleInputChange}
+/>
+          <input
             type="url"
             name="url"
             placeholder="Job Description URL"
@@ -612,6 +630,7 @@ const JobTracker = () => {
               <th>Months</th>
               <th>Pay</th>
               <th>Status</th>
+              <th>Source</th>
               <th>URL</th>
             </tr>
           </thead>
@@ -642,6 +661,7 @@ const JobTracker = () => {
                     <option value="Job">🎉 Job</option>
                   </select>
                 </td>
+                <td>{job.source}</td>
                 <td>
                   <a href={job.url} target="_blank" rel="noopener noreferrer">
                     Link
@@ -658,3 +678,5 @@ const JobTracker = () => {
 };
 
 export default JobTracker;
+
+
