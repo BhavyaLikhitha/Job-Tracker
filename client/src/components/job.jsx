@@ -356,6 +356,7 @@ const JobTracker = () => {
   const [loading, setLoading] = useState(true); // State for loading indicator
   const navigate = useNavigate();
   const isMobileView = () => window.innerWidth <= 768; // Define mobile width threshold
+  
   const [newJob, setNewJob] = useState({
     companyName: "",
     dateApplied: "",
@@ -375,6 +376,43 @@ const JobTracker = () => {
     console.log("Jobs state changed:", jobs); // Log every time jobs state changes
   }, [jobs]);
 
+  // useEffect(() => {
+  //   const fetchJobs = async () => {
+  //     try {
+  //       console.log("Token:", token); // Debugging token
+  //       const response = await fetch("https://job-tracker-api-rho.vercel.app/api/jobs/get-job", {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       });
+
+  //       console.log("Response Status:", response.status); // Debug response status
+
+  //       if (response.ok) {
+  //         const data = await response.json();
+  //         console.log("Jobs fetched from backend:", data); // Debug fetched jobs
+  //         setJobs(data); // Update jobs state
+  //       } else {
+  //         const errorData = await response.json();
+  //         console.error("Error response:", errorData); // Debug error response
+  //         toast.error(errorData.error || "Failed to fetch jobs");
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching jobs:", error);
+  //       toast.error("An error occurred while fetching jobs");
+  //     } finally {
+  //       setLoading(false); // Ensure loading state is updated
+  //     }
+  //   };
+
+  //   if (token) {
+  //     fetchJobs();
+  //   } else {
+  //     setLoading(false);
+  //   }
+  // }, [token]);
+  const [jobsAppliedToday, setJobsAppliedToday] = useState(0);
+
   useEffect(() => {
     const fetchJobs = async () => {
       try {
@@ -390,7 +428,8 @@ const JobTracker = () => {
         if (response.ok) {
           const data = await response.json();
           console.log("Jobs fetched from backend:", data); // Debug fetched jobs
-          setJobs(data); // Update jobs state
+          setJobs(data.jobs); // Update jobs state // Added this line for clarity
+          setJobsAppliedToday(data.jobsAppliedToday); // Store count of today's applications // Added this line for clarity
         } else {
           const errorData = await response.json();
           console.error("Error response:", errorData); // Debug error response
@@ -428,6 +467,18 @@ const JobTracker = () => {
     if (newJob.companyName && newJob.dateApplied && newJob.jobTitle) {
       try {
         console.log("Form data being sent:", newJob); // Debugging log
+
+        // newly added
+
+        const formattedDateApplied = new Date(newJob.dateApplied).toISOString().split("T")[0];
+
+const jobData = {
+  ...newJob,
+  dateApplied: formattedDateApplied, // Ensure only date part is sent
+};
+
+// newly added
+
   
         const response = await fetch("https://job-tracker-api-rho.vercel.app/api/jobs/add-job", {
           method: "POST",
@@ -435,7 +486,9 @@ const JobTracker = () => {
             "Content-Type": "application/json", // Explicitly set content type for JSON
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(newJob), // Send newJob as JSON
+          // body: JSON.stringify(newJob), // Send newJob as JSON
+          
+           body: JSON.stringify(jobData),
         });
   
         if (response.ok) {
@@ -498,17 +551,7 @@ const JobTracker = () => {
   const getStatusClass = (status) => {
     return `status-dropdown ${status.replace(/\s+/g, "-")}`;
   };
-  const jobsAppliedToday = jobs.filter((job) => {
-    // Get job date without time component
-    const jobDate = new Date(job.dateApplied);
-    const jobDateString = `${jobDate.getFullYear()}-${String(jobDate.getMonth() + 1).padStart(2, '0')}-${String(jobDate.getDate()).padStart(2, '0')}`;
-    
-    // Get today's date in local timezone without time component
-    const today = new Date();
-    const todayString = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-    
-    return jobDateString === todayString;
-}).length;
+  
   return (
     <div className="job-tracker">
       <div className="stats">

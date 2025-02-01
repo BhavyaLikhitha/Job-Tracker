@@ -171,7 +171,16 @@ export const getJobs = async (req, res) => {
     const jobs = await Job.find({ userId: objectId }).sort({ dateApplied: -1 });
 
     console.log("Jobs found for user:", jobs); // Debugging
-    res.status(200).json(jobs);
+      // Get today's date in UTC format (YYYY-MM-DD)
+      const today = new Date().toISOString().split("T")[0];
+
+      // Count jobs applied today
+      const jobsAppliedToday = jobs.filter((job) => {
+        const jobDate = new Date(job.dateApplied).toISOString().split("T")[0];
+        return jobDate === today;
+      }).length;
+      res.status(200).json({ jobs, jobsAppliedToday });
+    // res.status(200).json(jobs);
   } catch (error) {
     console.error("Error fetching jobs:", error);
     res.status(500).json({ error: "Error fetching jobs" });
