@@ -170,15 +170,18 @@ export const getJobs = async (req, res) => {
     // Fetch jobs and sort by dateApplied in descending order
     const jobs = await Job.find({ userId: objectId }).sort({ dateApplied: -1 });
 
-    console.log("Jobs found for user:", jobs); // Debugging
+    // console.log("Jobs found for user:", jobs); // Debugging
       // Get today's date in UTC format (YYYY-MM-DD)
       const today = new Date().toISOString().split("T")[0];
+      console.log("todays's date is :",today); //added this line
 
       // Count jobs applied today
       const jobsAppliedToday = jobs.filter((job) => {
         const jobDate = new Date(job.dateApplied).toISOString().split("T")[0];
         return jobDate === today;
       }).length;
+      console.log("jobs applied today is :",jobsAppliedToday) //added this line
+
       res.status(200).json({ jobs, jobsAppliedToday });
     // res.status(200).json(jobs);
   } catch (error) {
