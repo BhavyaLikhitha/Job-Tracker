@@ -416,6 +416,56 @@ const JobTracker = () => {
     setNewJob({ ...newJob, [name]: value });
   };
 
+  // const addJob = async () => {
+  //   const token = localStorage.getItem("token");
+  
+  //   if (!token) {
+  //     navigate("/signup");
+  //     toast.error("Please sign up or log in to add a job.");
+  //     return;
+  //   }
+  
+  //   if (newJob.companyName && newJob.dateApplied && newJob.jobTitle) {
+  //     try {
+  //       console.log("Form data being sent:", newJob); // Debugging log
+  
+  //       const response = await fetch("https://job-tracker-api-rho.vercel.app/api/jobs/add-job", {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json", // Explicitly set content type for JSON
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //         body: JSON.stringify(newJob), // Send newJob as JSON
+  //       });
+  
+  //       if (response.ok) {
+  //         const addedJob = await response.json();
+  //         console.log("Jobs fetched from backend:", addedJob);
+  //         setJobs([...jobs, addedJob]); // Add the new job to the state
+  //         setNewJob({
+  //           companyName: "",
+  //           dateApplied: "",
+  //           jobTitle: "",
+  //           months: "" || "",
+  //           pay: "" || "",
+  //           status: "applied",
+  //           source:"",
+  //           url: "" || "",
+  //         });
+  //         setFormVisible(false); // Hide the form after adding the job
+  //         toast.success("Job added successfully");
+  //       } else {
+  //         toast.error("Failed to add job");
+  //       }
+  //     } catch (error) {
+  //       console.error("Error adding job:", error);
+  //       toast.error("An error occurred while adding the job");
+  //     }
+  //   } else {
+  //     toast.error("Please fill in all required fields");
+  //   }
+  // };  
+
   const addJob = async () => {
     const token = localStorage.getItem("token");
   
@@ -427,32 +477,42 @@ const JobTracker = () => {
   
     if (newJob.companyName && newJob.dateApplied && newJob.jobTitle) {
       try {
-        console.log("Form data being sent:", newJob); // Debugging log
+        // Normalize the dateApplied field to ensure it only has the date (YYYY-MM-DD)
+        const formattedDateApplied = new Date(newJob.dateApplied).toISOString().split("T")[0];
+  
+        const jobData = {
+          ...newJob,
+          dateApplied: formattedDateApplied, // Store only the date part
+        };
+  
+        console.log("Form data being sent:", jobData); // Debugging log
   
         const response = await fetch("https://job-tracker-api-rho.vercel.app/api/jobs/add-job", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json", // Explicitly set content type for JSON
+            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(newJob), // Send newJob as JSON
+          body: JSON.stringify(jobData), // Send the normalized date
         });
   
         if (response.ok) {
           const addedJob = await response.json();
-          console.log("Jobs fetched from backend:", addedJob);
+          console.log("Job added:", addedJob);
           setJobs([...jobs, addedJob]); // Add the new job to the state
+  
           setNewJob({
             companyName: "",
             dateApplied: "",
             jobTitle: "",
-            months: "" || "",
-            pay: "" || "",
+            months: "",
+            pay: "",
             status: "applied",
-            source:"",
-            url: "" || "",
+            source: "",
+            url: "",
           });
-          setFormVisible(false); // Hide the form after adding the job
+  
+          setFormVisible(false);
           toast.success("Job added successfully");
         } else {
           toast.error("Failed to add job");
@@ -464,7 +524,8 @@ const JobTracker = () => {
     } else {
       toast.error("Please fill in all required fields");
     }
-  };  
+  };
+  
 
   const updateJobStatus = async (id, newStatus) => {
     try {
@@ -498,10 +559,10 @@ const JobTracker = () => {
     return `status-dropdown ${status.replace(/\s+/g, "-")}`;
   };
   const jobsAppliedToday = jobs.filter((job) => {
-    const today = new Date().toISOString().split("T")[0];
-    return job.dateApplied === today;
-  }).length;
-  
+    const jobDate = new Date(job.dateApplied).toISOString().split("T")[0]; // Normalize date
+    const today = new Date().toISOString().split("T")[0]; // Normalize today's date
+    return jobDate === today;
+  }).length;  
   
   return (
     <div className="job-tracker">
