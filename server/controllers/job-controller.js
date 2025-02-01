@@ -172,11 +172,18 @@ export const getJobs = async (req, res) => {
 
     // console.log("Jobs found for user:", jobs); // Debugging
      // Convert today's date to YYYY-MM-DD format in EST (no UTC shift)
-    const today = new Date();
-    today.setHours(0, 0, 0, 0); // Reset time to local midnight
-    const todayString = today.toLocaleDateString("en-CA"); // ✅ Correct format
+     const today = new Date();
 
-    console.log("Today's Date (Local EST):", todayString); // Debugging
+     // Convert UTC time to EST manually
+     const estOffset = -5 * 60; // EST is UTC-5 (in minutes)
+     const estDate = new Date(today.getTime() + estOffset * 60000);
+     estDate.setHours(0, 0, 0, 0); // Reset to midnight in EST
+     
+     // Format as YYYY-MM-DD without UTC conversion
+     const todayString = estDate.toISOString().split("T")[0];
+     
+     console.log("Today's Date (Forced to EST):", todayString); // Debugging
+     
 
     // Count jobs applied today (adjusted for timezone)
     const jobsAppliedToday = jobs.filter((job) => {
