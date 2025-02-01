@@ -172,15 +172,26 @@ export const getJobs = async (req, res) => {
 
     // console.log("Jobs found for user:", jobs); // Debugging
       // Get today's date in UTC format (YYYY-MM-DD)
-      const today = new Date().toISOString().split("T")[0];
-      console.log("todays's date is :",today); //added this line
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Reset to midnight in local time
+      
+      const todayString = today.toISOString().split("T")[0]; // Convert to YYYY-MM-DD
+      
+      console.log("Today's Date (Local EST):", todayString); // Debugging
+      
 
       // Count jobs applied today
-      const jobsAppliedToday = jobs.filter((job) => {
-        const jobDate = new Date(job.dateApplied).toISOString().split("T")[0];
-        return jobDate === today;
-      }).length;
-      console.log("jobs applied today is :",jobsAppliedToday) //added this line
+     // Count jobs applied today (adjust for timezone)
+    const jobsAppliedToday = jobs.filter((job) => {
+      const jobDate = new Date(job.dateApplied);
+      jobDate.setHours(0, 0, 0, 0); // Reset to local midnight
+      const jobDateString = jobDate.toISOString().split("T")[0];
+
+      console.log(`Comparing jobDate=${jobDateString} with today=${todayString}`); // Debugging
+      return jobDateString === todayString;
+    }).length;
+
+    console.log("Jobs Applied Today:", jobsAppliedToday); // Debugging
 
       res.status(200).json({ jobs, jobsAppliedToday });
     // res.status(200).json(jobs);
