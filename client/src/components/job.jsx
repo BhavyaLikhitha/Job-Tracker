@@ -641,11 +641,11 @@ const jobData = {
           <p>{jobs.filter((job) => job.status === "rejected").length}</p>
         </div>
         <div className="stat-box">
-          <h3>Awaiting Response</h3>
+          <h3>Total Assesments/OA</h3>
           <p>
             {jobs.filter(
               (job) =>
-                job.status === "applied" 
+                job.status === "assessment" 
                 // job.status === "no response" ||
                 // job.status === "ghosted"
             ).length}
