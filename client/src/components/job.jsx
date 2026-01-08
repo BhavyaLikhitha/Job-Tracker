@@ -645,9 +645,9 @@ const jobData = {
           <p>
             {jobs.filter(
               (job) =>
-                job.status === "applied" ||
-                job.status === "no response" ||
-                job.status === "ghosted"
+                job.status === "applied" 
+                // job.status === "no response" ||
+                // job.status === "ghosted"
             ).length}
           </p>
         </div>
@@ -725,8 +725,8 @@ const jobData = {
           />
           <select name="status" value={newJob.status} onChange={handleInputChange}>
             <option value="applied">📤 Applied</option>
-            <option value="ghosted">👻 Ghosted</option>
-            <option value="no response">⏳ No Response</option>
+            <option value="assessment">⏳ Assessment/OA</option>
+            {/* <option value="no response">👻 No Response</option> */}
             <option value="rejected">❌ Rejected</option>
             <option value="interview going on">✅ Interview Going On</option>
             <option value="Job">🎉 Job</option>
@@ -777,8 +777,8 @@ const jobData = {
                     onChange={(e) => updateJobStatus(job._id, e.target.value)}
                   >
                     <option value="applied">📤 Applied</option>
-                    <option value="ghosted">👻 Ghosted</option>
-                    <option value="no response">⏳ No Response</option>
+                    <option value="assessment">⏳ Assessment/OA</option>
+                    {/* <option value="no response">👻 No Response</option> */}
                     <option value="rejected">❌ Rejected</option>
                     <option value="interview going on">✅ Interview Going On</option>
                     <option value="Job">🎉 Job</option>
