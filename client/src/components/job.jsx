@@ -641,7 +641,7 @@ const jobData = {
           <p>{jobs.filter((job) => job.status === "rejected").length}</p>
         </div>
         <div className="stat-box">
-          <h3>Total Assesments/OA</h3>
+          <h3>Total OA's</h3>
           <p>
             {jobs.filter(
               (job) =>
