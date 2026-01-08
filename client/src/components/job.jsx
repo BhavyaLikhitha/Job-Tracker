@@ -761,7 +761,11 @@ const jobData = {
             {jobs.map((job) => (
               <tr key={job._id}>
                 <td>{job.companyName}</td>
-                <td>{job.dateApplied}</td>
+                {/* <td>{job.dateApplied}</td> */}
+<td>
+  {job.dateApplied.split("-").slice(1).join("/") + "/" + job.dateApplied.split("-")[0]}
+</td>
+
 
                 <td>{job.jobTitle}</td>
                 {/* <td>{job.months}</td> */}
