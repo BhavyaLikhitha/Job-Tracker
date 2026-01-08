@@ -25,7 +25,7 @@ const Navbar = () => {
         {isLoggedIn ? (
           <>
             <p className="welcome-msg">Welcome, {username} ❤️!</p>
-            <button onClick={handleLogout} className="logout-btn">
+            <button className="logout-btn" onClick={handleLogout} >
               Logout
             </button>
           </>

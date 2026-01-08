@@ -163,6 +163,17 @@
     margin-right: 20px;
   }
 
+  .logout-btn {
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
   /* Responsive styles for mobile view */
   @media (max-width: 768px) {
     .navbar {

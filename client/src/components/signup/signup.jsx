@@ -24,6 +24,7 @@ const Signup = () => {
       toast.error("Passwords do not match");
     } else {
       try {
+        // modified the URL for local testing on 1/7/26
         // const response = await fetch("http://localhost:3002/api/users/signup", {
           const response = await fetch("https://job-tracker-api-rho.vercel.app/api/users/signup", {
           method: "POST",

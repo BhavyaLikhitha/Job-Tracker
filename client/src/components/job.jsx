@@ -345,38 +345,7 @@
 // };
 
 // export default JobTracker;
-import React, { useState, useEffect } from "react";
-import "./job.css";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { useNavigate } from "react-router-dom";
-
-const JobTracker = () => {
-  const [jobs, setJobs] = useState([]);
-  const [loading, setLoading] = useState(true); // State for loading indicator
-  const navigate = useNavigate();
-  const isMobileView = () => window.innerWidth <= 768; // Define mobile width threshold
-  
-  const [newJob, setNewJob] = useState({
-    companyName: "",
-    dateApplied: "",
-    jobTitle: "",
-    months: "",
-    pay: "",
-    status: "applied",
-    source: "", // Added field
-    url: "",
-  });
-  const [formVisible, setFormVisible] = useState(false);
-
-  const userId = localStorage.getItem("userId"); // Assuming userId is stored after login
-  const token = localStorage.getItem("token"); // Assuming token is stored after login
-
-  useEffect(() => {
-    console.log("Jobs state changed:", jobs); // Log every time jobs state changes
-  }, [jobs]);
-
-  // useEffect(() => {
+// useEffect(() => {
   //   const fetchJobs = async () => {
   //     try {
   //       console.log("Token:", token); // Debugging token
@@ -411,12 +380,115 @@ const JobTracker = () => {
   //     setLoading(false);
   //   }
   // }, [token]);
+
+
+import React, { useState, useEffect } from "react";
+import "./job.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
+
+const JobTracker = () => {
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(true); // State for loading indicator
+  const navigate = useNavigate();
+  const isMobileView = () => window.innerWidth <= 768; // Define mobile width threshold
+  const [searchQuery, setSearchQuery] = useState(""); // ✅ ADD THIS
+  const [newJob, setNewJob] = useState({
+    companyName: "",
+    dateApplied: "",
+    jobTitle: "",
+    pay: "",
+    status: "applied",
+    source: "", // Added field
+    url: "",
+  });
+  const [formVisible, setFormVisible] = useState(false);
+  
+  const userId = localStorage.getItem("userId"); // Assuming userId is stored after login
+  const token = localStorage.getItem("token"); // Assuming token is stored after login
+
+  useEffect(() => {
+    console.log("Jobs state changed:", jobs); // Log every time jobs state changes
+  }, [jobs]);
+
+
+
   const [jobsAppliedToday, setJobsAppliedToday] = useState(0);
+// Remove the existing handleSearch function and the useEffect that re-fetches on empty query
+
+// Add this new useEffect for real-time search
+useEffect(() => {
+  const searchJobs = async () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) return;
+
+    try {
+      setLoading(true);
+
+      if (searchQuery.trim() === "") {
+        // If search is empty, fetch all jobs
+        // const response = await fetch("http://localhost:3002/api/jobs/get-job", {
+           const response = await fetch("https://job-tracker-api-rho.vercel.app/api/jobs/get-job", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setJobs(data.jobs);
+          setJobsAppliedToday(data.jobsAppliedToday);
+        }
+      } else {
+        // If there's a search query, search for matching jobs
+        // const response = await fetch(
+        //   `http://localhost:3002/api/jobs/search-job?query=${encodeURIComponent(
+        //     searchQuery.trim()
+        //   )}`,
+            const response = await fetch(
+          `https://job-tracker-api-rho.vercel.app/api/jobs/search-job?query=${encodeURIComponent(
+            searchQuery.trim()
+          )}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          setJobs(data.jobs);
+          } else {
+  const errorData = await response.json().catch(() => ({}));
+  console.error("Search failed:", response.status, errorData);
+  toast.error(errorData.error || `Failed to search jobs (${response.status})`);
+}
+      }
+    } catch (error) {
+      console.error("Search error:", error);
+      toast.error("Error while searching jobs");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Debounce the search to avoid too many API calls
+  const timeoutId = setTimeout(() => {
+    searchJobs();
+  }, 300); // Wait 300ms after user stops typing
+
+  return () => clearTimeout(timeoutId);
+}, [searchQuery, token]);
+
 
   useEffect(() => {
     const fetchJobs = async () => {
       try {
         console.log("Token:", token); // Debugging token
+            // const response = await fetch("http://localhost:3002/api/jobs/get-job", {
         const response = await fetch("https://job-tracker-api-rho.vercel.app/api/jobs/get-job", {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -450,6 +522,8 @@ const JobTracker = () => {
     }
   }, [token]);
 
+
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewJob({ ...newJob, [name]: value });
@@ -468,18 +542,16 @@ const JobTracker = () => {
       try {
         console.log("Form data being sent:", newJob); // Debugging log
 
-        // newly added
-
-        const formattedDateApplied = new Date(newJob.dateApplied).toISOString().split("T")[0];
-
+const formattedDateApplied = newJob.dateApplied; // Already in YYYY-MM-DD format
 const jobData = {
   ...newJob,
-  dateApplied: formattedDateApplied, // Ensure only date part is sent
+  dateApplied: formattedDateApplied // Ensure only date part is sent
 };
+
 
 // newly added
 
-  
+            // const response = await fetch("http://localhost:3002/api/jobs/add-job", {
         const response = await fetch("https://job-tracker-api-rho.vercel.app/api/jobs/add-job", {
           method: "POST",
           headers: {
@@ -499,11 +571,10 @@ const jobData = {
             companyName: "",
             dateApplied: "",
             jobTitle: "",
-            months: "" || "",
-            pay: "" || "",
+            pay: "",
             status: "applied",
             source:"",
-            url: "" || "",
+            url: "",
           });
           setFormVisible(false); // Hide the form after adding the job
           toast.success("Job added successfully");
@@ -522,6 +593,7 @@ const jobData = {
   
   const updateJobStatus = async (id, newStatus) => {
     try {
+          // const response = await fetch("http://localhost:3002/api/jobs/update-job-status", {
       const response = await fetch("https://job-tracker-api-rho.vercel.app/api/jobs/update-job-status", {
         method: "PUT",
         headers: {
@@ -584,20 +656,29 @@ const jobData = {
           <p>{jobs.filter((job) => job.status === "interview going on").length}</p>
         </div>
       </div>
-
-      <button
-        onClick={() => {
-          if (token) {
-            setFormVisible(!formVisible);
-          } else {
-            toast.info("Please sign up or log in to add a job.");
-            setTimeout(() => navigate("/signup"), 2000);
-            return;
-          }
-        }}
-      >
-        {formVisible ? "Cancel" : "Add Job"}
-      </button>
+    <div className="job-actions">
+<input
+  type="text"
+  placeholder="Search company"
+  value={searchQuery}
+  onChange={(e) => setSearchQuery(e.target.value)}
+  className="search-input"
+/>
+  <button
+    className="add"
+    onClick={() => {
+      if (token) {
+        setFormVisible(!formVisible);
+      } else {
+        toast.info("Please sign up or log in to add a job.");
+        setTimeout(() => navigate("/signup"), 2000);
+        return;
+      }
+    }}
+  >
+    {formVisible ? "Cancel" : "Add Job"}
+  </button>
+</div>
 
       {formVisible && (
         <div className="add-job">
@@ -622,14 +703,7 @@ const jobData = {
             onChange={handleInputChange}
           />
           <input
-            type="number"
-            name="months"
-            placeholder="Months"
-            value={newJob.months}
-            onChange={handleInputChange}
-          />
-          <input
-            type="number"
+            type="text"
             name="pay"
             placeholder="Pay"
             value={newJob.pay}
@@ -657,7 +731,7 @@ const jobData = {
             <option value="interview going on">✅ Interview Going On</option>
             <option value="Job">🎉 Job</option>
           </select>
-          <button onClick={addJob}>Add Job</button>
+          <button className = "Last-Add-Job-Button"onClick={addJob}>Add Job</button>
         </div>
       )}
 
@@ -676,7 +750,7 @@ const jobData = {
               <th>Company Name</th>
               <th>Date Applied</th>
               <th>Job Title</th>
-              <th>Months</th>
+              {/* <th>Months</th> */}
               <th>Pay</th>
               <th>Status</th>
               <th>Source</th>
@@ -687,14 +761,10 @@ const jobData = {
             {jobs.map((job) => (
               <tr key={job._id}>
                 <td>{job.companyName}</td>
-                {/* <td>{new Date(job.dateApplied).toLocaleDateString()}</td> */}
-                {/* <td>{formatDateToEST(job.dateApplied)}</td> */}
-                <td>{new Date(job.dateApplied).toISOString().split("T")[0]}</td>
-
-                {/* <td>{job.dateApplied}</td> */}
+                <td>{job.dateApplied}</td>
 
                 <td>{job.jobTitle}</td>
-                <td>{job.months}</td>
+                {/* <td>{job.months}</td> */}
                 <td>{job.pay}</td>
                 <td>
                   <select
@@ -711,11 +781,29 @@ const jobData = {
                   </select>
                 </td>
                 <td>{job.source}</td>
-                <td>
-                  <a href={job.url} target="_blank" rel="noopener noreferrer">
-                    Link
-                  </a>
-                </td>
+<td>
+  {(() => {
+    const raw = (job.url ?? "").trim();
+
+    const isValidHttpUrl = (s) => {
+      try {
+        const u = new URL(s);
+        return (u.protocol === "http:" || u.protocol === "https:") && !/\s/.test(s);
+      } catch {
+        return false;
+      }
+    };
+
+    return isValidHttpUrl(raw) ? (
+      <a href={raw} target="_blank" rel="noopener noreferrer">
+        Link
+      </a>
+    ) : (
+      <span>No URL</span>
+    );
+  })()}
+</td>
+
               </tr>
             ))}
           </tbody>

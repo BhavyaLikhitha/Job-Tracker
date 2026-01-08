@@ -102,37 +102,38 @@
 
 import Job from "../models/Job.js";
 
-export const addJob = async (req, res) => {
-  console.log("Request body:", req.body); // Logs job details
+// export const addJob = async (req, res) => {
+//   console.log("Request body:", req.body); // Logs job details
 
-  const { userId } = req.user;
-  const { companyName, dateApplied, jobTitle, months, pay, status, source, url } = req.body;
+//   const { userId } = req.user;
+//   const { companyName, dateApplied, jobTitle, months, pay, status, source, url } = req.body;
 
-  // Add validation for required fields
-  if (!companyName || !jobTitle || !source ) {
-    return res.status(400).json({ error: "All required fields must be provided." });
-  }
+//   // Add validation for required fields
+//   if (!companyName || !jobTitle || !source ) {
+//     return res.status(400).json({ error: "All required fields must be provided." });
+//   }
 
-  try {
-    const newJob = new Job({
-      userId,
-      companyName,
-      dateApplied,
-      jobTitle,
-      months,
-      pay,
-      status,
-      source,
-      url,
-    });
+//   try {
+//     const newJob = new Job({
+//       userId,
+//       companyName,
+//       dateApplied,
+//       jobTitle,
+//       // months,
+//       pay,
+//       status,
+//       source,
+//       url,
+//     });
 
-    const savedJob = await newJob.save();
-    res.status(201).json(savedJob);
-  } catch (error) {
-    console.error("Error adding new job:", error);
-    res.status(500).json({ error: "Error adding job" });
-  }
-};
+//     const savedJob = await newJob.save();
+//     res.status(201).json(savedJob);
+//   } catch (error) {
+//     console.error("Error adding new job:", error);
+//     res.status(500).json({ error: "Error adding job" });
+//   }
+// };
+
 import mongoose from "mongoose";
 
 // export const getJobs = async (req, res) => {
@@ -155,58 +156,166 @@ import mongoose from "mongoose";
 //   }
 // };
 
+// export const getJobs = async (req, res) => {
+//   const { userId } = req.user; // Extracted from token
+//   console.log("Decoded User ID:", userId); // Debugging
+
+//   if (!userId) {
+//     return res.status(400).json({ error: "User ID not found in request" });
+//   }
+
+//   try {
+//     // Ensure proper creation of ObjectId
+//     const objectId = mongoose.Types.ObjectId.createFromHexString(userId);
+
+//     // Fetch jobs and sort by dateApplied in descending order
+//     const jobs = await Job.find({ userId: objectId }).sort({ dateApplied: -1 });
+
+//     // console.log("Jobs found for user:", jobs); // Debugging
+//      // Convert today's date to YYYY-MM-DD format in EST (no UTC shift)
+//      const today = new Date();
+
+//      // Convert UTC time to EST manually
+//      const estOffset = -5 * 60; // EST is UTC-5 (in minutes)
+//      const estDate = new Date(today.getTime() + estOffset * 60000);
+//      estDate.setHours(0, 0, 0, 0); // Reset to midnight in EST
+     
+//      // Format as YYYY-MM-DD without UTC conversion
+//      const todayString = estDate.toISOString().split("T")[0];
+     
+//      console.log("Today's Date (Forced to EST):", todayString); // Debugging
+     
+
+//     // Count jobs applied today (adjusted for timezone)
+//     const jobsAppliedToday = jobs.filter((job) => {
+//       const jobDate = new Date(job.dateApplied);
+//       jobDate.setHours(0, 0, 0, 0); // Reset to local midnight
+//       const jobDateString = jobDate.toLocaleDateString("en-CA"); // ✅ Correct format
+
+//       console.log(`Comparing jobDate=${jobDateString} with today=${todayString}`); // Debugging
+//       return jobDateString === todayString;
+//     }).length;
+
+//     console.log("Jobs Applied Today:", jobsAppliedToday); // Debugging
+
+
+//       res.status(200).json({ jobs, jobsAppliedToday });
+//     // res.status(200).json(jobs);
+//   } catch (error) {
+//     console.error("Error fetching jobs:", error);
+//     res.status(500).json({ error: "Error fetching jobs" });
+//   }
+// };
+
+// export const getJobs = async (req, res) => {
+//   const { userId } = req.user;
+
+//   if (!userId) {
+//     return res.status(400).json({ error: "User ID not found in request" });
+//   }
+
+//   try {
+//     const objectId = mongoose.Types.ObjectId.createFromHexString(userId);
+
+//     const jobs = await Job.find({ userId: objectId }).sort({ dateApplied: -1 });
+
+//     // ✅ Get today's date in EST (YYYY-MM-DD)
+//     const today = new Date();
+//     const estDate = new Date(
+//       today.toLocaleString("en-US", { timeZone: "America/New_York" })
+//     );
+//     const estString = estDate.toISOString().split("T")[0];
+
+//     let jobsAppliedToday = 0;
+
+//     const normalizedJobs = jobs.map((job) => {
+//       // Normalize URL
+//       let normalizedUrl = "No URL";
+//       if (job.url && job.url.trim() !== "") {
+//         normalizedUrl =
+//           job.url.startsWith("http://") || job.url.startsWith("https://")
+//             ? job.url
+//             : `https://${job.url}`;
+//       }
+
+//       // ✅ String-to-string comparison (NO Date objects)
+//       if (job.dateApplied === estString) {
+//         jobsAppliedToday++;
+//       }
+
+//       return job.toObject();
+  
+//     });
+
+//     res.status(200).json({
+//       jobs: normalizedJobs,
+//       jobsAppliedToday,
+//     });
+//   } catch (error) {
+//     console.error("Error fetching jobs:", error);
+//     res.status(500).json({ error: "Error fetching jobs" });
+//   }
+// };
+
+export const addJob = async (req, res) => {
+  const { userId } = req.user;
+  const { companyName, dateApplied, jobTitle, pay, status, source, url } = req.body;
+
+  if (!companyName || !jobTitle || !source) {
+    return res.status(400).json({ error: "All required fields must be provided." });
+  }
+
+  try {
+    const formattedDate = dateApplied;
+
+    const newJob = new Job({
+      userId,
+      companyName,
+      dateApplied: formattedDate,
+      jobTitle,
+      pay,
+      status,
+      source,
+      url, 
+    });
+
+    const savedJob = await newJob.save();
+    res.status(201).json(savedJob);
+  } catch (error) {
+    console.error("Error adding new job:", error);
+    res.status(500).json({ error: "Error adding job" });
+  }
+};
+
 export const getJobs = async (req, res) => {
-  const { userId } = req.user; // Extracted from token
-  console.log("Decoded User ID:", userId); // Debugging
+  const { userId } = req.user;
 
   if (!userId) {
     return res.status(400).json({ error: "User ID not found in request" });
   }
 
   try {
-    // Ensure proper creation of ObjectId
     const objectId = mongoose.Types.ObjectId.createFromHexString(userId);
 
-    // Fetch jobs and sort by dateApplied in descending order
     const jobs = await Job.find({ userId: objectId }).sort({ dateApplied: -1 });
 
-    // console.log("Jobs found for user:", jobs); // Debugging
-     // Convert today's date to YYYY-MM-DD format in EST (no UTC shift)
-     const today = new Date();
+    const todayString = new Date()
+  .toLocaleDateString("en-CA", { timeZone: "America/New_York" });
+      console.log("Today's Date (EST):", todayString); // Debugging
+const jobsAppliedToday = jobs.filter(
+  (job) => job.dateApplied === todayString
+).length;
 
-     // Convert UTC time to EST manually
-     const estOffset = -5 * 60; // EST is UTC-5 (in minutes)
-     const estDate = new Date(today.getTime() + estOffset * 60000);
-     estDate.setHours(0, 0, 0, 0); // Reset to midnight in EST
-     
-     // Format as YYYY-MM-DD without UTC conversion
-     const todayString = estDate.toISOString().split("T")[0];
-     
-     console.log("Today's Date (Forced to EST):", todayString); // Debugging
-     
-
-    // Count jobs applied today (adjusted for timezone)
-    const jobsAppliedToday = jobs.filter((job) => {
-      const jobDate = new Date(job.dateApplied);
-      jobDate.setHours(0, 0, 0, 0); // Reset to local midnight
-      const jobDateString = jobDate.toLocaleDateString("en-CA"); // ✅ Correct format
-
-      console.log(`Comparing jobDate=${jobDateString} with today=${todayString}`); // Debugging
-      return jobDateString === todayString;
-    }).length;
-
-    console.log("Jobs Applied Today:", jobsAppliedToday); // Debugging
-
-
-      res.status(200).json({ jobs, jobsAppliedToday });
-    // res.status(200).json(jobs);
+  console.log("Jobs Applied Today:", jobsAppliedToday); // Debugging
+    res.status(200).json({
+      jobs: jobs,
+      jobsAppliedToday,
+    });
   } catch (error) {
     console.error("Error fetching jobs:", error);
     res.status(500).json({ error: "Error fetching jobs" });
   }
 };
-
-
 
 export const updateJobStatus = async (req, res) => {
   const { jobId, status } = req.body; // Extract jobId and status from the request body
@@ -231,5 +340,37 @@ export const updateJobStatus = async (req, res) => {
   } catch (error) {
     console.error("Error updating job status:", error);
     res.status(500).json({ error: "Error updating job status" });
+  }
+};
+
+export const searchJobs = async (req, res) => {
+   console.log("Search endpoint hit:", req.query);
+  const { userId } = req.user;
+  const { query } = req.query;
+
+  if (!userId) {
+    return res.status(400).json({ error: "User ID not found" });
+  }
+
+  if (!query || query.trim() === "") {
+    return res.status(400).json({ error: "Search query is required" });
+  }
+
+  try {
+    const objectId = mongoose.Types.ObjectId.createFromHexString(userId);
+
+    const jobs = await Job.find({
+      userId: objectId,
+      companyName: {
+        // $regex: query.trim(),
+        $regex: `^${query.trim()}`, 
+        $options: "i", // ✅ case-insensitive
+      },
+    }).sort({ dateApplied: -1 });
+    // console.log("Search results:", jobs);
+    res.status(200).json({ jobs });
+  } catch (error) {
+    console.error("Error searching jobs:", error);
+    res.status(500).json({ error: "Error searching jobs" });
   }
 };
