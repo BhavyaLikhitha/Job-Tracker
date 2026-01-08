@@ -115,13 +115,10 @@
     background-color: #007bff; 
   }
   
-  .status-dropdown.ghosted {
+  .status-dropdown.assesment {
     background-color: #ffc107; 
   }
   
-  .status-dropdown.no-response{
-    background-color: #17a2b8; 
-  }
   
   .status-dropdown.rejected {
     background-color: #dc3545;
