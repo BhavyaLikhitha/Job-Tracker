@@ -47,12 +47,16 @@ User-friendly signup form to create a personalized job tracking account.
 ## 🛠️ Tech Stack 🛠️
 
 ### 🖥️ **Frontend**
-- **React.js** ⚛️
+- **React** ⚛️
 - **CSS** 🎨
+- **HTML** 
+- **Javascript** 
 
 ### 🌐 **Backend**
 - **Express.js** 🚀
 - **Node.js** 🌲
+
+### **Database**
 - **MongoDB** 🍃
 
 ### ☁️ **Deployment**
