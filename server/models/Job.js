@@ -8,7 +8,7 @@ const JobSchema = new mongoose.Schema({
   required: true,
 },
   jobTitle: { type: String, required: true }, // Required field
-  pay: { type: String}, // Required field
+  // pay: { type: String}, // Required field
   status: {
     type: String,
     enum: ["applied", "rejected", "no response", "ghosted", "interview going on", "Job"],
