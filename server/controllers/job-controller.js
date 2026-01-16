@@ -2,7 +2,7 @@ import Job from "../models/Job.js";
 import mongoose from "mongoose";
 export const addJob = async (req, res) => {
   const { userId } = req.user;
-  const { companyName, dateApplied, jobTitle, pay, status, source, url } = req.body;
+  const { companyName, dateApplied, jobTitle, status, source } = req.body;
 
   if (!companyName || !jobTitle || !source) {
     return res.status(400).json({ error: "All required fields must be provided." });
@@ -16,10 +16,10 @@ export const addJob = async (req, res) => {
       companyName,
       dateApplied: formattedDate,
       jobTitle,
-      pay,
+      // pay,
       status,
       source,
-      url, 
+      // url, 
     });
 
     const savedJob = await newJob.save();
