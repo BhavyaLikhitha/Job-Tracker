@@ -14,10 +14,10 @@ const JobTracker = () => {
     companyName: "",
     dateApplied: "",
     jobTitle: "",
-    pay: "",
+    // pay: "",
     status: "applied",
     source: "", // Added field
-    url: "",
+    // url: "",
   });
   const [formVisible, setFormVisible] = useState(false);
   
@@ -187,10 +187,10 @@ const jobData = {
             companyName: "",
             dateApplied: "",
             jobTitle: "",
-            pay: "",
+            // pay: "",
             status: "applied",
             source:"",
-            url: "",
+            // url: "",
           });
           setFormVisible(false); // Hide the form after adding the job
           toast.success("Job added successfully");
@@ -318,13 +318,13 @@ const jobData = {
             value={newJob.jobTitle}
             onChange={handleInputChange}
           />
-          <input
+          {/* <input
             type="text"
             name="pay"
             placeholder="Pay"
             value={newJob.pay}
             onChange={handleInputChange}
-          />
+          /> */}
           <input
   type="text"
   name="source"
@@ -332,13 +332,7 @@ const jobData = {
   value={newJob.source}
   onChange={handleInputChange}
 />
-          <input
-            type="url"
-            name="url"
-            placeholder="Job Description URL"
-            value={newJob.url}
-            onChange={handleInputChange}
-          />
+          
           <select name="status" value={newJob.status} onChange={handleInputChange}>
             <option value="applied">📤 Applied</option>
             <option value="assessment">⏳ Assessment/OA</option>
@@ -367,10 +361,10 @@ const jobData = {
               <th>Date Applied</th>
               <th>Job Title</th>
               {/* <th>Months</th> */}
-              <th>Pay</th>
+              {/* <th>Pay</th> */}
               <th>Status</th>
               <th>Source</th>
-              <th>URL</th>
+              {/* <th>URL</th> */}
             </tr>
           </thead>
           <tbody>
@@ -385,7 +379,7 @@ const jobData = {
 
                 <td>{job.jobTitle}</td>
                 {/* <td>{job.months}</td> */}
-                <td>{job.pay}</td>
+                {/* <td>{job.pay}</td> */}
                 <td>
                   <select
                     className={getStatusClass(job.status)}
@@ -401,7 +395,7 @@ const jobData = {
                   </select>
                 </td>
                 <td>{job.source}</td>
-<td>
+{/* <td>
   {(() => {
     const raw = (job.url ?? "").trim();
 
@@ -422,7 +416,7 @@ const jobData = {
       <span>No URL</span>
     );
   })()}
-</td>
+</td> */}
 
               </tr>
             ))}
