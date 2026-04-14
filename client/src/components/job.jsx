@@ -4,6 +4,9 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 
+const getTodayDate = () =>
+  new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" });
+
 const JobTracker = () => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true); // State for loading indicator
@@ -12,11 +15,11 @@ const JobTracker = () => {
   const [searchQuery, setSearchQuery] = useState(""); // ✅ ADD THIS
   const [newJob, setNewJob] = useState({
     companyName: "",
-    dateApplied: "",
+    dateApplied: getTodayDate(),
     jobTitle: "",
     // pay: "",
     status: "applied",
-    source: "", // Added field
+    source: "without referral", // Added field
     referralName: "",
     // url: "",
   });
@@ -198,11 +201,11 @@ const jobData = {
           setJobs([...jobs, addedJob]); // Add the new job to the state
           setNewJob({
             companyName: "",
-            dateApplied: "",
+            dateApplied: getTodayDate(),
             jobTitle: "",
             // pay: "",
             status: "applied",
-            source:"",
+            source:"without referral",
             referralName: "",
             // url: "",
           });
