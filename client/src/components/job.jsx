@@ -17,6 +17,7 @@ const JobTracker = () => {
     // pay: "",
     status: "applied",
     source: "", // Added field
+    referralName: "",
     // url: "",
   });
   const [formVisible, setFormVisible] = useState(false);
@@ -142,7 +143,11 @@ useEffect(() => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setNewJob({ ...newJob, [name]: value });
+    setNewJob((prevJob) => ({
+      ...prevJob,
+      [name]: value,
+      ...(name === "source" && value !== "referral" ? { referralName: "" } : {}),
+    }));
   };
 
   const addJob = async () => {
@@ -154,7 +159,15 @@ useEffect(() => {
       return;
     }
   
-    if (newJob.companyName && newJob.dateApplied && newJob.jobTitle) {
+    const requiresReferralName = newJob.source === "referral";
+
+    if (
+      newJob.companyName &&
+      newJob.dateApplied &&
+      newJob.jobTitle &&
+      newJob.source &&
+      (!requiresReferralName || newJob.referralName.trim())
+    ) {
       try {
         console.log("Form data being sent:", newJob); // Debugging log
 
@@ -190,6 +203,7 @@ const jobData = {
             // pay: "",
             status: "applied",
             source:"",
+            referralName: "",
             // url: "",
           });
           setFormVisible(false); // Hide the form after adding the job
@@ -238,6 +252,22 @@ const jobData = {
 
   const getStatusClass = (status) => {
     return `status-dropdown ${status.replace(/\s+/g, "-")}`;
+  };
+
+  const formatSourceLabel = (source) => {
+    if (source === "referral") return "Referral";
+    if (source === "without referral") return "Without Referral";
+    return source;
+  };
+
+  const formatReferralDetails = (job) => {
+    const sourceLabel = formatSourceLabel(job.source);
+
+    if (job.source === "referral" && job.referralName) {
+      return `${sourceLabel} - ${job.referralName}`;
+    }
+
+    return sourceLabel;
   };
   
   return (
@@ -298,6 +328,12 @@ const jobData = {
 
       {formVisible && (
         <div className="add-job">
+          <div className="add-job-card">
+            <div className="add-job-header">
+              <h3>Add New Job</h3>
+              <p>Track each application with a cleaner, faster form.</p>
+            </div>
+            <div className="add-job-grid">
           <input
             type="text"
             name="companyName"
@@ -308,6 +344,7 @@ const jobData = {
           <input
             type="date"
             name="dateApplied"
+            className="date-input"
             value={newJob.dateApplied}
             onChange={handleInputChange}
           />
@@ -325,13 +362,22 @@ const jobData = {
             value={newJob.pay}
             onChange={handleInputChange}
           /> */}
-          <input
-  type="text"
-  name="source"
-  placeholder="Job Source"
-  value={newJob.source}
-  onChange={handleInputChange}
-/>
+          <select name="source" value={newJob.source} onChange={handleInputChange}>
+            <option value="" disabled>
+              Referral Type
+            </option>
+            <option value="referral">Referral</option>
+            <option value="without referral">Without Referral</option>
+          </select>
+          {newJob.source === "referral" && (
+            <input
+              type="text"
+              name="referralName"
+              placeholder="Referral Name"
+              value={newJob.referralName}
+              onChange={handleInputChange}
+            />
+          )}
           
           <select name="status" value={newJob.status} onChange={handleInputChange}>
             <option value="applied">📤 Applied</option>
@@ -341,7 +387,9 @@ const jobData = {
             <option value="interview going on">✅ Interview Going On</option>
             <option value="Job">🎉 Job</option>
           </select>
+            </div>
           <button className = "Last-Add-Job-Button"onClick={addJob}>Add Job</button>
+          </div>
         </div>
       )}
 
@@ -363,7 +411,7 @@ const jobData = {
               {/* <th>Months</th> */}
               {/* <th>Pay</th> */}
               <th>Status</th>
-              <th>Source</th>
+              <th>Referral</th>
               {/* <th>URL</th> */}
             </tr>
           </thead>
@@ -394,7 +442,7 @@ const jobData = {
                     <option value="Job">🎉 Job</option>
                   </select>
                 </td>
-                <td>{job.source}</td>
+                <td>{formatReferralDetails(job)}</td>
 {/* <td>
   {(() => {
     const raw = (job.url ?? "").trim();

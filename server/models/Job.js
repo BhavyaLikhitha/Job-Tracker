@@ -15,6 +15,7 @@ const JobSchema = new mongoose.Schema({
     default: "applied",
   },
   source:{type:String, required:true},
+  referralName: { type: String, default: "" },
   url: { type: String } // Required field
 });
 

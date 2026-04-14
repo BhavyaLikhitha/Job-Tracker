@@ -2,10 +2,14 @@ import Job from "../models/Job.js";
 import mongoose from "mongoose";
 export const addJob = async (req, res) => {
   const { userId } = req.user;
-  const { companyName, dateApplied, jobTitle, status, source } = req.body;
+  const { companyName, dateApplied, jobTitle, status, source, referralName } = req.body;
 
   if (!companyName || !jobTitle || !source) {
     return res.status(400).json({ error: "All required fields must be provided." });
+  }
+
+  if (source === "referral" && !referralName?.trim()) {
+    return res.status(400).json({ error: "Referral name is required for referral applications." });
   }
 
   try {
@@ -19,6 +23,7 @@ export const addJob = async (req, res) => {
       // pay,
       status,
       source,
+      referralName: source === "referral" ? referralName.trim() : "",
       // url, 
     });
 
