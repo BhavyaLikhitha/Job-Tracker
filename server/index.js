@@ -2,12 +2,23 @@ import dotenv from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
+import helmet from "helmet";
+import swaggerUi from "swagger-ui-express";
 import userRoutes from "./routes/user-routes.js";
 import jobRoutes from "./routes/jobs-routes.js";
+import openapiSpec from "./docs/openapi.js";
 
 dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
+
+// Security headers. crossOriginResourcePolicy is relaxed because the API is
+// consumed by a separate frontend origin (Vercel).
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+  })
+);
 
 const corsOptions = {
   origin: "https://job-tracker-coop-search.vercel.app", // Your frontend origin
@@ -26,6 +37,18 @@ mongoose
   .connect(process.env.MONGO_CONNECTION)
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.error("Error connecting to MongoDB:", err));
+
+// Lightweight liveness probe for uptime checks / container orchestration.
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "ok",
+    db: mongoose.connection.readyState === 1 ? "connected" : "disconnected",
+    uptime: process.uptime(),
+  });
+});
+
+// Interactive API documentation.
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(openapiSpec));
 
 // Routes
 app.use("/api/users", userRoutes);
