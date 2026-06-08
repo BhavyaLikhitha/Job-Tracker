@@ -31,10 +31,11 @@ const EXCLUDED_DATES = new Set([
 
 ]);
 
-// Counts consecutive weekdays (Mon–Fri) with at least one job applied,
-// walking back from today. Weekends (Sat/Sun) and excluded dates are skipped
-// and never break the streak. Today not having an application yet does not
-// break it either.
+// Counts weekdays (Mon–Fri) with at least one job applied, walking back from
+// today. Weekends (Sat/Sun) and excluded dates are skipped and never break the
+// streak. A single missed weekday is forgiven (it bridges the streak without
+// adding to the count); two missed weekdays in a row break it. Today not having
+// an application yet does not break it either.
 const calculateStreak = (appliedDates, todayString) => {
   const dates = new Set(
     appliedDates.map((d) => String(d).split("T")[0]).filter(Boolean)
@@ -45,6 +46,7 @@ const calculateStreak = (appliedDates, todayString) => {
   const cursor = new Date(Date.UTC(ty, tm - 1, td, 12));
 
   let streak = 0;
+  let consecutiveMisses = 0; // run of missed weekdays since the last application
   for (let i = 0; i < 3650; i++) {
     const day = cursor.getUTCDay(); // 0 = Sun, 6 = Sat
     const cursorStr = cursor.toISOString().split("T")[0];
@@ -54,12 +56,15 @@ const calculateStreak = (appliedDates, todayString) => {
     } else if (dates.has(cursorStr)) {
       // An application on any day (incl. weekends) counts toward the streak
       streak += 1;
+      consecutiveMisses = 0; // an application refills the one-day grace
     } else if (day === 0 || day === 6) {
       // Empty weekend: skip without breaking the streak
     } else if (cursorStr === todayString) {
       // No application yet today; the day isn't over, so don't break
     } else {
-      break;
+      // A missed weekday: forgive the first, break on the second in a row
+      consecutiveMisses += 1;
+      if (consecutiveMisses >= 2) break;
     }
 
     cursor.setUTCDate(cursor.getUTCDate() - 1);
