@@ -292,5 +292,32 @@
       margin-top: 20px;
     }
   }
-  
 
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.page-btn {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 20px;
+  padding: 8px 18px;
+  font-size: 14px;
+}
+
+.page-btn:disabled {
+  background-color: #b5d6bd;
+  cursor: not-allowed;
+}
+
+.page-info {
+  font-size: 14px;
+  color: #203627;
+  font-weight: 600;
+}
