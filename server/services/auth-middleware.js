@@ -8,11 +8,9 @@ export const authenticate = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log("Decoded Token:", decoded); // Log token to debug
     req.user = decoded; // { userId: "..." }
     next();
-  } catch (err) {
-    console.error("Error decoding token:", err);
+  } catch {
     return res.status(403).json({ error: "Invalid token" });
   }
 };
