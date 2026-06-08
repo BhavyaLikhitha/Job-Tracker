@@ -19,4 +19,8 @@ const JobSchema = new mongoose.Schema({
   url: { type: String } // Required field
 });
 
+// Every job query is scoped to a user and sorted by date, so this compound
+// index lets Mongo serve the list (and its sort) without a collection scan.
+JobSchema.index({ userId: 1, dateApplied: -1 });
+
 export default mongoose.model("Job", JobSchema);

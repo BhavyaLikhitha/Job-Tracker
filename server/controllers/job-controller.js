@@ -36,7 +36,7 @@ const EXCLUDED_DATES = new Set([
 // streak. A single missed weekday is forgiven (it bridges the streak without
 // adding to the count); two missed weekdays in a row break it. Today not having
 // an application yet does not break it either.
-const calculateStreak = (appliedDates, todayString) => {
+export const calculateStreak = (appliedDates, todayString) => {
   const dates = new Set(
     appliedDates.map((d) => String(d).split("T")[0]).filter(Boolean)
   );
@@ -74,7 +74,7 @@ const calculateStreak = (appliedDates, todayString) => {
 };
 
 // Parses ?page & ?limit query params into safe, bounded values.
-const getPagination = (req) => {
+export const getPagination = (req) => {
   const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
   const limit = Math.min(Math.max(parseInt(req.query.limit, 10) || 10, 1), 100);
   return { page, limit, skip: (page - 1) * limit };
@@ -124,37 +124,44 @@ export const getJobs = async (req, res) => {
   try {
     const objectId = mongoose.Types.ObjectId.createFromHexString(userId);
     const { page, limit, skip } = getPagination(req);
-    const filter = { userId: objectId };
 
     const todayString = new Date().toLocaleDateString("en-CA", {
       timeZone: "America/New_York",
     });
 
-    // Fetch only the current page of jobs, but compute the stat-box numbers
-    // (which span all jobs) in parallel so each box stays accurate.
-    const [
-      jobs,
-      totalJobs,
-      totalRejected,
-      interviewsOngoing,
-      jobsAppliedToday,
-      appliedDates,
-    ] = await Promise.all([
-      Job.find(filter).sort({ dateApplied: -1 }).skip(skip).limit(limit),
-      Job.countDocuments(filter),
-      Job.countDocuments({ ...filter, status: "rejected" }),
-      Job.countDocuments({ ...filter, status: "interview going on" }),
-      Job.countDocuments({ ...filter, dateApplied: todayString }),
-      Job.distinct("dateApplied", filter),
+    // One round trip instead of six: $facet computes the current page and every
+    // stat-box count (which span all jobs) in a single aggregation. The output
+    // is shaped to match the previous Promise.all response exactly.
+    const [result] = await Job.aggregate([
+      { $match: { userId: objectId } },
+      {
+        $facet: {
+          jobs: [{ $sort: { dateApplied: -1 } }, { $skip: skip }, { $limit: limit }],
+          totalJobs: [{ $count: "count" }],
+          totalRejected: [{ $match: { status: "rejected" } }, { $count: "count" }],
+          interviewsOngoing: [
+            { $match: { status: "interview going on" } },
+            { $count: "count" },
+          ],
+          jobsAppliedToday: [
+            { $match: { dateApplied: todayString } },
+            { $count: "count" },
+          ],
+          appliedDates: [{ $group: { _id: "$dateApplied" } }],
+        },
+      },
     ]);
 
+    const count = (facet) => facet[0]?.count ?? 0;
+    const totalJobs = count(result.totalJobs);
+    const appliedDates = result.appliedDates.map((d) => d._id);
     const streak = calculateStreak(appliedDates, todayString);
 
     res.status(200).json({
-      jobs,
-      jobsAppliedToday,
-      totalRejected,
-      interviewsOngoing,
+      jobs: result.jobs,
+      jobsAppliedToday: count(result.jobsAppliedToday),
+      totalRejected: count(result.totalRejected),
+      interviewsOngoing: count(result.interviewsOngoing),
       streak,
       totalJobs,
       totalPages: Math.ceil(totalJobs / limit) || 1,
@@ -193,7 +200,6 @@ export const updateJobStatus = async (req, res) => {
 };
 
 export const searchJobs = async (req, res) => {
-   console.log("Search endpoint hit:", req.query);
   const { userId } = req.user;
   const { query } = req.query;
 
@@ -209,7 +215,7 @@ export const searchJobs = async (req, res) => {
     const objectId = mongoose.Types.ObjectId.createFromHexString(userId);
     const { page, limit, skip } = getPagination(req);
 
-    const filter = {
+    const match = {
       userId: objectId,
       companyName: {
         $regex: `^${query.trim()}`,
@@ -217,13 +223,21 @@ export const searchJobs = async (req, res) => {
       },
     };
 
-    const [jobs, totalJobs] = await Promise.all([
-      Job.find(filter).sort({ dateApplied: -1 }).skip(skip).limit(limit),
-      Job.countDocuments(filter),
+    // Single round trip for the page and its total (was two queries).
+    const [result] = await Job.aggregate([
+      { $match: match },
+      {
+        $facet: {
+          jobs: [{ $sort: { dateApplied: -1 } }, { $skip: skip }, { $limit: limit }],
+          totalJobs: [{ $count: "count" }],
+        },
+      },
     ]);
 
+    const totalJobs = result.totalJobs[0]?.count ?? 0;
+
     res.status(200).json({
-      jobs,
+      jobs: result.jobs,
       totalJobs,
       totalPages: Math.ceil(totalJobs / limit) || 1,
       currentPage: page,
