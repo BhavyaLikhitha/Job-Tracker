@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import "./job.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -25,7 +25,6 @@ const JobTracker = () => {
   });
   const [formVisible, setFormVisible] = useState(false);
   
-  const userId = localStorage.getItem("userId"); // Assuming userId is stored after login
   const token = localStorage.getItem("token"); // Assuming token is stored after login
 
   useEffect(() => {
@@ -368,7 +367,7 @@ const jobData = {
         </div>
       ) : jobs.length === 0 ? (
         <div className="no-jobs-message">
-          <p>😢 Uh oh! You haven't added any jobs to track yet. 😲</p>
+          <p>😢 Uh oh! You haven&apos;t added any jobs to track yet. 😲</p>
         </div>
       ) : (
         <table>
