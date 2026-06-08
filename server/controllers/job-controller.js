@@ -1,9 +1,21 @@
 import Job from "../models/Job.js";
 import mongoose from "mongoose";
 
+// Dates manually excluded from the streak (e.g. holidays/breaks). These are
+// skipped like weekends: they neither count toward nor break the streak.
+const EXCLUDED_DATES = new Set([
+  "2026-05-29",
+  "2026-05-30",
+  "2026-05-31",
+  "2026-06-01",
+  "2026-06-02",
+  "2026-06-03",
+]);
+
 // Counts consecutive weekdays (Mon–Fri) with at least one job applied,
-// walking back from today. Weekends (Sat/Sun) are skipped and never break
-// the streak. Today not having an application yet does not break it either.
+// walking back from today. Weekends (Sat/Sun) and excluded dates are skipped
+// and never break the streak. Today not having an application yet does not
+// break it either.
 const calculateStreak = (appliedDates, todayString) => {
   const dates = new Set(
     appliedDates.map((d) => String(d).split("T")[0]).filter(Boolean)
@@ -20,6 +32,8 @@ const calculateStreak = (appliedDates, todayString) => {
 
     if (day === 0 || day === 6) {
       // Weekend: skip without breaking the streak
+    } else if (EXCLUDED_DATES.has(cursorStr)) {
+      // Manually excluded date: skip without breaking the streak
     } else if (dates.has(cursorStr)) {
       streak += 1;
     } else if (cursorStr === todayString) {
