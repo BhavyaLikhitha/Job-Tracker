@@ -34,113 +34,78 @@ const JobTracker = () => {
 
 
 
-  const [jobsAppliedToday, setJobsAppliedToday] = useState(0);
-// Remove the existing handleSearch function and the useEffect that re-fetches on empty query
+  const [stats, setStats] = useState({
+    totalJobs: 0,
+    jobsAppliedToday: 0,
+    totalRejected: 0,
+    interviewsOngoing: 0,
+    streak: 0,
+  });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [refreshKey, setRefreshKey] = useState(0); // bump to force a refetch
+  const JOBS_PER_PAGE = 10;
 
-// Add this new useEffect for real-time search
-useEffect(() => {
-  const searchJobs = async () => {
-    const token = localStorage.getItem("token");
-
-    if (!token) return;
-
-    try {
-      setLoading(true);
-
-      if (searchQuery.trim() === "") {
-        // If search is empty, fetch all jobs
-        // const response = await fetch("http://localhost:3002/api/jobs/get-job", {
-           const response = await fetch("https://job-tracker-api-rho.vercel.app/api/jobs/get-job", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setJobs(data.jobs);
-          setJobsAppliedToday(data.jobsAppliedToday);
-        }
-      } else {
-        // If there's a search query, search for matching jobs
-        // const response = await fetch(
-        //   `http://localhost:3002/api/jobs/search-job?query=${encodeURIComponent(
-        //     searchQuery.trim()
-        //   )}`,
-            const response = await fetch(
-          `https://job-tracker-api-rho.vercel.app/api/jobs/search-job?query=${encodeURIComponent(
-            searchQuery.trim()
-          )}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          setJobs(data.jobs);
-          } else {
-  const errorData = await response.json().catch(() => ({}));
-  console.error("Search failed:", response.status, errorData);
-  toast.error(errorData.error || `Failed to search jobs (${response.status})`);
-}
-      }
-    } catch (error) {
-      console.error("Search error:", error);
-      toast.error("Error while searching jobs");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Debounce the search to avoid too many API calls
-  const timeoutId = setTimeout(() => {
-    searchJobs();
-  }, 300); // Wait 300ms after user stops typing
-
-  return () => clearTimeout(timeoutId);
-}, [searchQuery, token]);
-
-
+  // Single source of truth for loading jobs. Refetches whenever the page or
+  // search query changes, so we only ever pull 10 rows from the server at a
+  // time. A blank search hits get-job (with stats); a query hits search-job.
   useEffect(() => {
-    const fetchJobs = async () => {
-      try {
-        console.log("Token:", token); // Debugging token
-            // const response = await fetch("http://localhost:3002/api/jobs/get-job", {
-        const response = await fetch("https://job-tracker-api-rho.vercel.app/api/jobs/get-job", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+    if (!token) {
+      setLoading(false);
+      return;
+    }
 
-        console.log("Response Status:", response.status); // Debug response status
+    const fetchData = async () => {
+      const trimmed = searchQuery.trim();
+      const base = "https://job-tracker-api-rho.vercel.app/api/jobs";
+      const url =
+        trimmed === ""
+          ? `${base}/get-job?page=${currentPage}&limit=${JOBS_PER_PAGE}`
+          : `${base}/search-job?query=${encodeURIComponent(
+              trimmed
+            )}&page=${currentPage}&limit=${JOBS_PER_PAGE}`;
+
+      try {
+        setLoading(true);
+        const response = await fetch(url, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
         if (response.ok) {
           const data = await response.json();
-          console.log("Jobs fetched from backend:", data); // Debug fetched jobs
-          setJobs(data.jobs); // Update jobs state // Added this line for clarity
-          setJobsAppliedToday(data.jobsAppliedToday); // Store count of today's applications // Added this line for clarity
+          setJobs(data.jobs);
+          setTotalPages(data.totalPages || 1);
+          // Stat boxes count ALL jobs, so only refresh them from the
+          // unfiltered get-job response (search is scoped to a query).
+          if (trimmed === "") {
+            setStats({
+              totalJobs: data.totalJobs ?? 0,
+              jobsAppliedToday: data.jobsAppliedToday ?? 0,
+              totalRejected: data.totalRejected ?? 0,
+              interviewsOngoing: data.interviewsOngoing ?? 0,
+              streak: data.streak ?? 0,
+            });
+          }
         } else {
-          const errorData = await response.json();
-          console.error("Error response:", errorData); // Debug error response
-          toast.error(errorData.error || "Failed to fetch jobs");
+          const errorData = await response.json().catch(() => ({}));
+          console.error("Fetch failed:", response.status, errorData);
+          toast.error(
+            errorData.error || `Failed to load jobs (${response.status})`
+          );
         }
       } catch (error) {
-        console.error("Error fetching jobs:", error);
-        toast.error("An error occurred while fetching jobs");
+        console.error("Fetch error:", error);
+        toast.error("Error while loading jobs");
       } finally {
-        setLoading(false); // Ensure loading state is updated
+        setLoading(false);
       }
     };
 
-    if (token) {
-      fetchJobs();
-    } else {
-      setLoading(false);
-    }
-  }, [token]);
+    // Debounce only while typing a search; paging fires immediately.
+    const delay = searchQuery.trim() === "" ? 0 : 300;
+    const timeoutId = setTimeout(fetchData, delay);
+    return () => clearTimeout(timeoutId);
+  }, [searchQuery, currentPage, token, refreshKey]);
 
 
 
@@ -198,7 +163,11 @@ const jobData = {
         if (response.ok) {
           const addedJob = await response.json();
           console.log("Jobs fetched from backend:", addedJob);
-          setJobs([...jobs, addedJob]); // Add the new job to the state
+          // Jump to the first page and refetch so the new job and updated
+          // stat counts show up (the list is now server-paginated).
+          setSearchQuery("");
+          setCurrentPage(1);
+          setRefreshKey((k) => k + 1);
           setNewJob({
             companyName: "",
             dateApplied: getTodayDate(),
@@ -241,6 +210,7 @@ const jobData = {
           job._id === id ? { ...job, status: newStatus } : job
         );
         setJobs(updatedJobs); // Update the `jobs` state with the modified job
+        setRefreshKey((k) => k + 1); // resync the stat counts (rejected/interviews)
         toast.success("Job status updated"); // Show a success toast
       } else {
         const errorData = await response.json(); // Parse error response
@@ -278,31 +248,24 @@ const jobData = {
       <div className="stats">
       <div className="stat-box jobs-applied-today">
   <h3>Jobs Applied Today</h3>
-  <p>{jobsAppliedToday}</p>
+  <p>{stats.jobsAppliedToday}</p>
 </div>
 
         <div className="stat-box">
           <h3>Total Jobs Applied</h3>
-          <p>{jobs.length}</p>
+          <p>{stats.totalJobs}</p>
         </div>
         <div className="stat-box">
           <h3>Total Rejected</h3>
-          <p>{jobs.filter((job) => job.status === "rejected").length}</p>
+          <p>{stats.totalRejected}</p>
         </div>
         <div className="stat-box">
-          <h3>Total OA's</h3>
-          <p>
-            {jobs.filter(
-              (job) =>
-                job.status === "assessment" 
-                // job.status === "no response" ||
-                // job.status === "ghosted"
-            ).length}
-          </p>
+          <h3>Streak (weekdays)</h3>
+          <p>{stats.streak}</p>
         </div>
         <div className="stat-box">
           <h3>Interviews Ongoing</h3>
-          <p>{jobs.filter((job) => job.status === "interview going on").length}</p>
+          <p>{stats.interviewsOngoing}</p>
         </div>
       </div>
     <div className="job-actions">
@@ -310,7 +273,10 @@ const jobData = {
   type="text"
   placeholder="Search company"
   value={searchQuery}
-  onChange={(e) => setSearchQuery(e.target.value)}
+  onChange={(e) => {
+    setSearchQuery(e.target.value);
+    setCurrentPage(1); // results may have fewer pages; start at the top
+  }}
   className="search-input"
 />
   <button
@@ -473,6 +439,28 @@ const jobData = {
             ))}
           </tbody>
         </table>
+      )}
+
+      {!isMobileView() && token && totalPages > 1 && (
+        <div className="pagination">
+          <button
+            className="page-btn"
+            onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+            disabled={currentPage <= 1 || loading}
+          >
+            ← Prev
+          </button>
+          <span className="page-info">
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            className="page-btn"
+            onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+            disabled={currentPage >= totalPages || loading}
+          >
+            Next →
+          </button>
+        </div>
       )}
       <ToastContainer autoClose={3000} />
     </div>
