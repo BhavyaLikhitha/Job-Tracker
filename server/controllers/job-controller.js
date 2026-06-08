@@ -10,6 +10,9 @@ const EXCLUDED_DATES = new Set([
   "2026-06-01",
   "2026-06-02",
   "2026-06-03",
+  "2026-05-23",
+  "2026-05-24",
+  "2026-05-25",
 ]);
 
 // Counts consecutive weekdays (Mon–Fri) with at least one job applied,
@@ -30,12 +33,13 @@ const calculateStreak = (appliedDates, todayString) => {
     const day = cursor.getUTCDay(); // 0 = Sun, 6 = Sat
     const cursorStr = cursor.toISOString().split("T")[0];
 
-    if (day === 0 || day === 6) {
-      // Weekend: skip without breaking the streak
-    } else if (EXCLUDED_DATES.has(cursorStr)) {
+    if (EXCLUDED_DATES.has(cursorStr)) {
       // Manually excluded date: skip without breaking the streak
     } else if (dates.has(cursorStr)) {
+      // An application on any day (incl. weekends) counts toward the streak
       streak += 1;
+    } else if (day === 0 || day === 6) {
+      // Empty weekend: skip without breaking the streak
     } else if (cursorStr === todayString) {
       // No application yet today; the day isn't over, so don't break
     } else {

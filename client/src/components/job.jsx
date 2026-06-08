@@ -260,7 +260,7 @@ const jobData = {
           <p>{stats.totalRejected}</p>
         </div>
         <div className="stat-box">
-          <h3>Streak (weekdays)</h3>
+          <h3>Streak</h3>
           <p>{stats.streak}</p>
         </div>
         <div className="stat-box">
