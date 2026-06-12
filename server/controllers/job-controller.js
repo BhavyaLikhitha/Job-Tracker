@@ -199,6 +199,53 @@ export const updateJobStatus = async (req, res) => {
   }
 };
 
+export const deleteJob = async (req, res) => {
+  const { userId } = req.user;
+  const { id } = req.params;
+
+  try {
+    const deleted = await Job.findOneAndDelete({ _id: id, userId });
+    if (!deleted) {
+      return res.status(404).json({ error: "Job not found" });
+    }
+    res.status(200).json({ message: "Job deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting job:", error);
+    res.status(500).json({ error: "Error deleting job" });
+  }
+};
+
+export const updateJob = async (req, res) => {
+  const { userId } = req.user;
+  const { id } = req.params;
+  const { companyName, dateApplied, jobTitle, status, source, referralName } = req.body;
+
+  if (!companyName || !jobTitle || !source) {
+    return res.status(400).json({ error: "All required fields must be provided." });
+  }
+
+  if (source === "referral" && !referralName?.trim()) {
+    return res.status(400).json({ error: "Referral name is required for referral applications." });
+  }
+
+  try {
+    const updated = await Job.findOneAndUpdate(
+      { _id: id, userId },
+      { companyName, dateApplied, jobTitle, status, source, referralName: source === "referral" ? referralName.trim() : "" },
+      { new: true }
+    );
+
+    if (!updated) {
+      return res.status(404).json({ error: "Job not found" });
+    }
+
+    res.status(200).json(updated);
+  } catch (error) {
+    console.error("Error updating job:", error);
+    res.status(500).json({ error: "Error updating job" });
+  }
+};
+
 export const searchJobs = async (req, res) => {
   const { userId } = req.user;
   const { query } = req.query;

@@ -24,7 +24,8 @@ const JobTracker = () => {
     // url: "",
   });
   const [formVisible, setFormVisible] = useState(false);
-  
+  const [editMode, setEditMode] = useState(null); // holds job._id when editing
+
   const token = localStorage.getItem("token"); // Assuming token is stored after login
 
   useEffect(() => {
@@ -222,6 +223,87 @@ const jobData = {
     }
   };
 
+  const handleDeleteJob = async (id) => {
+    try {
+      const response = await fetch(`https://job-tracker-api-rho.vercel.app/api/jobs/delete-job/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (response.ok) {
+        setJobs(jobs.filter((j) => j._id !== id));
+        setRefreshKey((k) => k + 1);
+        toast.success("Job deleted");
+      } else {
+        const err = await response.json();
+        toast.error(err.error || "Failed to delete job");
+      }
+    } catch (error) {
+      console.error("Error deleting job:", error);
+      toast.error("An error occurred while deleting the job");
+    }
+  };
+
+  const handleEditClick = (job) => {
+    setNewJob({
+      companyName: job.companyName,
+      dateApplied: job.dateApplied,
+      jobTitle: job.jobTitle,
+      status: job.status,
+      source: job.source,
+      referralName: job.referralName || "",
+    });
+    setEditMode(job._id);
+    setFormVisible(true);
+  };
+
+  const handleSaveEdit = async () => {
+    const requiresReferralName = newJob.source === "referral";
+    if (
+      !newJob.companyName ||
+      !newJob.dateApplied ||
+      !newJob.jobTitle ||
+      !newJob.source ||
+      (requiresReferralName && !newJob.referralName.trim())
+    ) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
+    try {
+      const response = await fetch(`https://job-tracker-api-rho.vercel.app/api/jobs/update-job/${editMode}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ ...newJob }),
+      });
+
+      if (response.ok) {
+        const updatedJob = await response.json();
+        setJobs(jobs.map((j) => (j._id === editMode ? updatedJob : j)));
+        setRefreshKey((k) => k + 1);
+        setFormVisible(false);
+        setEditMode(null);
+        setNewJob({
+          companyName: "",
+          dateApplied: getTodayDate(),
+          jobTitle: "",
+          status: "applied",
+          source: "without referral",
+          referralName: "",
+        });
+        toast.success("Job updated successfully");
+      } else {
+        const err = await response.json();
+        toast.error(err.error || "Failed to update job");
+      }
+    } catch (error) {
+      console.error("Error updating job:", error);
+      toast.error("An error occurred while updating the job");
+    }
+  };
+
   const getStatusClass = (status) => {
     return `status-dropdown ${status.replace(/\s+/g, "-")}`;
   };
@@ -282,7 +364,12 @@ const jobData = {
     className="add"
     onClick={() => {
       if (token) {
-        setFormVisible(!formVisible);
+        const next = !formVisible;
+        setFormVisible(next);
+        if (!next) {
+          setEditMode(null);
+          setNewJob({ companyName: "", dateApplied: getTodayDate(), jobTitle: "", status: "applied", source: "without referral", referralName: "" });
+        }
       } else {
         toast.info("Please sign up or log in to add a job.");
         setTimeout(() => navigate("/signup"), 2000);
@@ -298,8 +385,8 @@ const jobData = {
         <div className="add-job">
           <div className="add-job-card">
             <div className="add-job-header">
-              <h3>Add New Job</h3>
-              <p>Track each application with a cleaner, faster form.</p>
+              <h3>{editMode ? "Edit Job" : "Add New Job"}</h3>
+              <p>{editMode ? "Update the job details below." : "Track each application with a cleaner, faster form."}</p>
             </div>
             <div className="add-job-grid">
           <input
@@ -356,7 +443,9 @@ const jobData = {
             <option value="Job">🎉 Job</option>
           </select>
             </div>
-          <button className = "Last-Add-Job-Button"onClick={addJob}>Add Job</button>
+          <button className="Last-Add-Job-Button" onClick={editMode ? handleSaveEdit : addJob}>
+            {editMode ? "Save Changes" : "Add Job"}
+          </button>
           </div>
         </div>
       )}
@@ -381,6 +470,7 @@ const jobData = {
               <th>Status</th>
               <th>Referral</th>
               {/* <th>URL</th> */}
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -411,6 +501,22 @@ const jobData = {
                   </select>
                 </td>
                 <td>{formatReferralDetails(job)}</td>
+                <td className="action-cell">
+                  <button className="action-btn edit-btn" onClick={() => handleEditClick(job)} title="Edit">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    </svg>
+                  </button>
+                  <button className="action-btn delete-btn" onClick={() => handleDeleteJob(job._id)} title="Delete">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="3 6 5 6 21 6"/>
+                      <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                      <path d="M10 11v6"/><path d="M14 11v6"/>
+                      <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                    </svg>
+                  </button>
+                </td>
 {/* <td>
   {(() => {
     const raw = (job.url ?? "").trim();
