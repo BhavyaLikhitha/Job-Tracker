@@ -16,7 +16,8 @@ const JobSchema = new mongoose.Schema({
   },
   source:{type:String, required:true},
   referralName: { type: String, default: "" },
-  url: { type: String } // Required field
+  url: { type: String }, // Required field
+  sponsorship: { type: String, enum: ["yes", "no"], default: "yes" }
 });
 
 // Every job query is scoped to a user and sorted by date, so this compound

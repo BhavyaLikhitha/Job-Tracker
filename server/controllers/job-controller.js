@@ -199,6 +199,31 @@ export const updateJobStatus = async (req, res) => {
   }
 };
 
+export const updateJobSponsorship = async (req, res) => {
+  const { jobId, sponsorship } = req.body;
+
+  if (!jobId || !sponsorship) {
+    return res.status(400).json({ error: "Job ID and sponsorship are required" });
+  }
+
+  try {
+    const updatedJob = await Job.findByIdAndUpdate(
+      jobId,
+      { sponsorship },
+      { new: true }
+    );
+
+    if (!updatedJob) {
+      return res.status(404).json({ error: "Job not found" });
+    }
+
+    res.status(200).json({ message: "Job sponsorship updated successfully", updatedJob });
+  } catch (error) {
+    console.error("Error updating job sponsorship:", error);
+    res.status(500).json({ error: "Error updating job sponsorship" });
+  }
+};
+
 export const deleteJob = async (req, res) => {
   const { userId } = req.user;
   const { id } = req.params;

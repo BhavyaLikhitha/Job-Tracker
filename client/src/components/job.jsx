@@ -193,6 +193,32 @@ const jobData = {
   };  
 
   
+  const updateJobSponsorship = async (id, newSponsorship) => {
+    try {
+      const response = await fetch("https://job-tracker-api-rho.vercel.app/api/jobs/update-job-sponsorship", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ jobId: id, sponsorship: newSponsorship }),
+      });
+
+      if (response.ok) {
+        setJobs(jobs.map((job) =>
+          job._id === id ? { ...job, sponsorship: newSponsorship } : job
+        ));
+        toast.success("Sponsorship updated");
+      } else {
+        const errorData = await response.json();
+        toast.error(errorData.error || "Failed to update sponsorship");
+      }
+    } catch (error) {
+      console.error("Error updating sponsorship:", error);
+      toast.error("An error occurred while updating sponsorship");
+    }
+  };
+
   const updateJobStatus = async (id, newStatus) => {
     try {
           // const response = await fetch("http://localhost:3002/api/jobs/update-job-status", {
@@ -469,6 +495,7 @@ const jobData = {
               {/* <th>Pay</th> */}
               <th>Status</th>
               <th>Referral</th>
+              <th>Sponsorship</th>
               {/* <th>URL</th> */}
               <th>Actions</th>
             </tr>
@@ -501,6 +528,16 @@ const jobData = {
                   </select>
                 </td>
                 <td>{formatReferralDetails(job)}</td>
+                <td>
+                  <select
+                    className={`sponsorship-dropdown ${job.sponsorship === "no" ? "sponsorship-no" : "sponsorship-yes"}`}
+                    value={job.sponsorship ?? "yes"}
+                    onChange={(e) => updateJobSponsorship(job._id, e.target.value)}
+                  >
+                    <option value="yes">✅ Yes</option>
+                    <option value="no">❌ No</option>
+                  </select>
+                </td>
                 <td className="action-cell">
                   <button className="action-btn edit-btn" onClick={() => handleEditClick(job)} title="Edit">
                     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

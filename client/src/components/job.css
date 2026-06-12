@@ -214,6 +214,29 @@
     background-color: #f783e3; 
   }
   
+.sponsorship-dropdown {
+  outline: none;
+  padding: 6px;
+  border: 1px solid #ddd;
+  border-radius: 15px;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.sponsorship-dropdown.sponsorship-yes {
+  background-color: #28a745;
+}
+
+.sponsorship-dropdown.sponsorship-no {
+  background-color: #dc3545;
+}
+
+.sponsorship-dropdown option {
+  color: black;
+  background: white;
+}
+
 .Last-Add-Job-Button {
     margin: 24px 0 0; 
     display: block; 
