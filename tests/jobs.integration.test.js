@@ -184,3 +184,145 @@ describe("update-job-status", () => {
     expect(res.status).toBe(400);
   });
 });
+
+describe("update-job-sponsorship", () => {
+  it("updates a job's sponsorship field", async () => {
+    const created = await addJob({ companyName: "SponsorCo" });
+    const jobId = created.body._id;
+
+    const res = await request(app)
+      .put("/api/jobs/update-job-sponsorship")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ jobId, sponsorship: "yes" });
+    expect(res.status).toBe(200);
+    expect(res.body.updatedJob.sponsorship).toBe("yes");
+  });
+
+  it("returns 400 when jobId or sponsorship is missing", async () => {
+    const res = await request(app)
+      .put("/api/jobs/update-job-sponsorship")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ jobId: "someid" });
+    expect(res.status).toBe(400);
+  });
+
+  it("returns 404 for a non-existent job", async () => {
+    const fakeId = "000000000000000000000001";
+    const res = await request(app)
+      .put("/api/jobs/update-job-sponsorship")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ jobId: fakeId, sponsorship: "no" });
+    expect(res.status).toBe(404);
+  });
+});
+
+describe("update-job", () => {
+  it("updates all fields of an existing job", async () => {
+    const created = await addJob({ companyName: "OldCo" });
+    const id = created.body._id;
+
+    const res = await request(app)
+      .put(`/api/jobs/update-job/${id}`)
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        companyName: "NewCo",
+        dateApplied: todayNY(),
+        jobTitle: "Engineer",
+        status: "applied",
+        source: "without referral",
+      });
+    expect(res.status).toBe(200);
+    expect(res.body.companyName).toBe("NewCo");
+    expect(res.body.jobTitle).toBe("Engineer");
+  });
+
+  it("returns 400 when required fields are missing", async () => {
+    const created = await addJob();
+    const id = created.body._id;
+
+    const res = await request(app)
+      .put(`/api/jobs/update-job/${id}`)
+      .set("Authorization", `Bearer ${token}`)
+      .send({ companyName: "X", source: "without referral" }); // missing jobTitle
+    expect(res.status).toBe(400);
+  });
+
+  it("returns 400 when source is referral but referralName is absent", async () => {
+    const created = await addJob();
+    const id = created.body._id;
+
+    const res = await request(app)
+      .put(`/api/jobs/update-job/${id}`)
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        companyName: "X",
+        jobTitle: "Dev",
+        source: "referral",
+        referralName: "  ",
+        dateApplied: todayNY(),
+        status: "applied",
+      });
+    expect(res.status).toBe(400);
+  });
+
+  it("returns 404 when the job does not belong to the user", async () => {
+    const fakeId = "000000000000000000000002";
+    const res = await request(app)
+      .put(`/api/jobs/update-job/${fakeId}`)
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        companyName: "X",
+        jobTitle: "Dev",
+        source: "without referral",
+        dateApplied: todayNY(),
+        status: "applied",
+      });
+    expect(res.status).toBe(404);
+  });
+});
+
+describe("delete-job", () => {
+  it("deletes an existing job and reduces the total count", async () => {
+    const created = await addJob({ companyName: "DeleteMe" });
+    const id = created.body._id;
+
+    const before = await request(app)
+      .get("/api/jobs/get-job")
+      .set("Authorization", `Bearer ${token}`);
+    const countBefore = before.body.totalJobs;
+
+    const del = await request(app)
+      .delete(`/api/jobs/delete-job/${id}`)
+      .set("Authorization", `Bearer ${token}`);
+    expect(del.status).toBe(200);
+
+    const after = await request(app)
+      .get("/api/jobs/get-job")
+      .set("Authorization", `Bearer ${token}`);
+    expect(after.body.totalJobs).toBe(countBefore - 1);
+  });
+
+  it("returns 404 when the job does not exist", async () => {
+    const fakeId = "000000000000000000000003";
+    const res = await request(app)
+      .delete(`/api/jobs/delete-job/${fakeId}`)
+      .set("Authorization", `Bearer ${token}`);
+    expect(res.status).toBe(404);
+  });
+});
+
+describe("auth error paths", () => {
+  it("returns 404 when logging in with an unknown email", async () => {
+    const res = await request(app)
+      .post("/api/users/login")
+      .send({ email: "nobody@example.com", password: "password123" });
+    expect(res.status).toBe(404);
+  });
+
+  it("returns 401 when logging in with the wrong password", async () => {
+    const res = await request(app)
+      .post("/api/users/login")
+      .send({ email: "tester@example.com", password: "wrongpassword" });
+    expect(res.status).toBe(401);
+  });
+});
