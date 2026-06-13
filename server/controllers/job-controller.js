@@ -136,7 +136,7 @@ export const getJobs = async (req, res) => {
       { $match: { userId: objectId } },
       {
         $facet: {
-          jobs: [{ $sort: { dateApplied: -1 } }, { $skip: skip }, { $limit: limit }],
+          jobs: [{ $sort: { dateApplied: -1, _id: -1 } }, { $skip: skip }, { $limit: limit }],
           totalJobs: [{ $count: "count" }],
           totalRejected: [{ $match: { status: "rejected" } }, { $count: "count" }],
           interviewsOngoing: [
@@ -300,7 +300,7 @@ export const searchJobs = async (req, res) => {
       { $match: match },
       {
         $facet: {
-          jobs: [{ $sort: { dateApplied: -1 } }, { $skip: skip }, { $limit: limit }],
+          jobs: [{ $sort: { dateApplied: -1, _id: -1 } }, { $skip: skip }, { $limit: limit }],
           totalJobs: [{ $count: "count" }],
         },
       },
